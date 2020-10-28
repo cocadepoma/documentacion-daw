@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h2 {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #caja {
+            text-align: center;
+            margin: 0 auto;
+            width: 500px;
+            padding: 20px;
+            background-color: lightgray;
+            margin-top: 100px;
+            border: 1px solid gray;
+        }
+        
+        #cajita {
+            background-color: rgb(216, 240, 193);
+            text-align: center;
+            margin: 20px auto;
+            border: 1px solid green;
+            width: 500px;
+            padding: 10px 20px;
+            display: none;
+        }
+    </style>
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+    <div id="caja">
+        <h3>Login Usuarios</h3>
+
+        <form action="#" id="form_login">
+            <label for="user">Usuario: </label>
+            <input type="text" name="user" id="user">
+            <br><br>
+            <label for="pass_one">Contraseña: </label>
+            <input type="password" name="pass_one" id="pass_one">
+            <br><br>
+            <label for="pass_two">Repetir Contraseña: </label>
+            <input type="password" name="pass_two" id="pass_two">
+            <br><br>
+            <input type="submit" value="Login">
+            <input type="reset" value="Reset">
+        </form>
+
+    </div>
+
+    <div id="cajita">
+        <h2>Resultado</h2>
+        <p id="resultado"></p>
+    </div>
+</body>
+
+</html>

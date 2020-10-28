@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h2 {
+            padding: 0;
+            margin: 0;
+        }
+        
+        #caja {
+            text-align: center;
+            margin: 0 auto;
+            width: 500px;
+            padding: 20px;
+            background-color: lightgray;
+            margin-top: 100px;
+            border: 1px solid gray;
+        }
+        
+        #cajita {
+            background-color: rgb(216, 240, 193);
+            text-align: center;
+            margin: 20px auto;
+            border: 1px solid green;
+            width: 500px;
+            padding: 10px 20px;
+            display: none;
+        }
+    </style>
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+    <div id="caja">
+
+        <label for="cantidad">Importe:</label>
+        <input type="number" name="cantidad" id="cantidad">
+        <br><br>
+
+        <label for="convers">De: </label>
+        <select name="convers" id="convers">
+            <option value="dollar" selected>USD $</option>
+            <option value="euro">€ Euro</option>
+        </select>
+
+        <label for="convers2">a: </label>
+        <select name="convers2" id="convers2">
+            <option value="euro" selected>€ Euro</option>
+            <option value="dollar">USD $</option> 
+        </select>
+        <br><br>
+
+        <button id="convert">Convertir</button>
+
+
+    </div>
+
+    <div id="cajita">
+        <h2>Resultado</h2>
+        <p id="resultado"></p>
+    </div>
+</body>
+
+</html>

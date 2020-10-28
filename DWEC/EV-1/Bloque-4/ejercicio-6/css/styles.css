@@ -1,0 +1,33 @@
+.rojo {
+    color: red;
+}
+
+.verde {
+    color: green;
+}
+
+.amarillo {
+    color: yellow;
+}
+
+.azul {
+    color: blue;
+}
+
+.black {
+    color: black;
+}
+
+body {
+    background-color: rgb(192, 192, 192);
+}
+
+p {
+    margin: 0;
+}
+
+.caja {
+    height: 113px;
+    width: 113px;
+    background-color: chartreuse;
+}

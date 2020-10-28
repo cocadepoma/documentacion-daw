@@ -1,0 +1,46 @@
+.rojo {
+    color: red;
+}
+
+.verde {
+    color: green;
+}
+
+.amarillo {
+    color: yellow;
+}
+
+.azul {
+    color: blue;
+}
+
+.black {
+    color: black;
+}
+
+body {
+    background-color: rgb(192, 192, 192);
+}
+
+p {
+    margin: 0;
+}
+
+.caja {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cajita {
+    flex: 0 0 20%;
+    margin: 20px;
+    text-align: center;
+    line-height: 1.7;
+    max-width: 30px;
+    max-height: 30px;
+    background-color: rgb(133, 30, 17);
+    color: #fff;
+    border: 3px solid #fff;
+}

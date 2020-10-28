@@ -1,7 +1,8 @@
 # AWS
- Tutorial EC" en google
+ Tutorial EC2 en google
 
  [enlace](https://docs.aws.amazon.com/ec2/index.html)
+ 
 ## **Crear claves**
 Desde la instancia, deberemos crear un par de claves.
 

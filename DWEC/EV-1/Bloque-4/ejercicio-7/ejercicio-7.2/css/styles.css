@@ -1,0 +1,43 @@
+.rojo {
+    color: red;
+}
+
+.verde {
+    color: green;
+}
+
+.amarillo {
+    color: yellow;
+}
+
+.azul {
+    color: blue;
+}
+
+.black {
+    color: black;
+}
+
+body {
+    background-color: rgb(192, 192, 192);
+}
+
+p {
+    margin: 0;
+    line-height: 2;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.caja {
+    text-align: center;
+    border: 5px solid black;
+    max-height: 70px;
+    background-color: rgb(255, 187, 0);
+    margin-bottom: 20px;
+}
+
+.blanco {
+    background-color: white;
+    border: 1px solid black;
+}
