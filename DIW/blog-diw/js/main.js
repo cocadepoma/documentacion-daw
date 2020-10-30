@@ -57,20 +57,20 @@ $().ready(() => {
         let separator = $('.separator').offset().top;
         let position = $(window).scrollTop() + 103;
 
-        // Convertir navbar a blanco
+        // Change navbar to white-bg and black-color
         if (position > separator) {
             nav.addClass('bg-white shadow black-text');
             $('.a-nav').addClass('black');
             frs.css('display', 'inline');
         }
-        // Convertir navbar a transparent
+        // Change navbar to default
         if (position <= separator) {
             nav.removeClass('bg-white shadow');
             $('.a-nav').removeClass('black');
             frs.css('display', 'none');
         }
 
-        // Animacion boton GOTOP
+        // GOTOP Button Hide/Show animation class
         var height = $(window).scrollTop();
         if (height > 600) {
 
@@ -81,15 +81,15 @@ $().ready(() => {
     });
 
 
-    // Animacion para subir al TOP
+    // GoTop movement to TOP
     $('#goTop').click(function(event) {
         event.preventDefault();
         $("html, body").animate({ scrollTop: 0 }, 1300);
-        return false;
+
     });
 
 
-    // Agregar efectos a las capturas de proyectos
+    // Hover to projects images
     let proyectos = $('.project');
 
     for (let i = 0; i < proyectos.length; i++) {
