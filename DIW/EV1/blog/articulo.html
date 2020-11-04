@@ -16,41 +16,53 @@
 
 <body>
 
-    <header class="wallpapper">
+    <header>
 
         <nav>
             <a href="index.html"><img class="frs" src="img/frs2.png" alt="logo"></a>
 
             <div class="burger-menu">
                 <div class="burger">
-                    <div class="linea"></div>
-                    <div class="linea"></div>
-                    <div class="linea"></div>
+                    <div class="linea line-one"></div>
+                    <div class="linea line-two"></div>
+                    <div class="linea line-three"></div>
                 </div>
             </div>
 
+
+            <ul class="mobile-menu">
+                <li>
+                    <a class="a-burguer" href="index.html">about</a>
+                </li>
+                <li>
+                    <a class="a-burguer" href="projects.html">projects</a>
+                </li>
+                <li>
+                    <a class="a-burguer" href="blog.html">blog</a>
+                </li>
+                <li>
+                    <a class="a-burguer" href="contact.html">contact</a>
+                </li>
+                <li>
+                    <a class="close-menu"><i class="fas fa-angle-up"></i></a>
+                </li>
+            </ul>
+
             <ul id="main-menu">
                 <li>
-                    <a class="prueba" href="index.html">about</a>
+                    <a class="a-nav" href="index.html">about</a>
                 </li>
                 <li>
-                    <a class="prueba" href="projects.html">projects</a>
+                    <a class="a-nav" href="projects.html">projects</a>
                 </li>
                 <li>
-                    <a class="prueba" href="blog.html">blog</a>
+                    <a class="a-nav" href="blog.html">blog</a>
                 </li>
                 <li>
-                    <a class="prueba" href="#">contact</a>
+                    <a class="a-nav" href="#">contact</a>
                 </li>
             </ul>
         </nav>
-
-        <div class="filter">
-            <div class="about">
-                <h1>Francisco Rodríguez</h1>
-                <h2>spanish web developer for javascript, angular and ionic</h2>
-            </div>
-        </div>
 
     </header>
     <!-- header end -->
@@ -169,20 +181,33 @@
         </div>
     </main>
     <!-- main content -->
+    <section class="clip"></section>
 
-    <footer>
+    <!-- Previous Footer Social Media -->
+    <section class="social">
+        <div class="social-wrapper container">
 
-        <p class="name">Francisco Rodríguez &copy;</p>
-        <div class="rrss">
-
-            <a href="#"><i class="fab fa-facebook-square"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-twitter-square"></i></a>
-            <a href="#"><i class="fab fa-youtube-square"></i></a>
+            <div class="contact-now">
+                <div class="box">
+                    <p>Get info, <span class="bold">Contact with me!</span></p>
+                    <button class="btn btn-contact">get in touch</button>
+                </div>
+            </div>
+            <div class="rrss">
+                <div class="box">
+                    <a href="#"><img class="greyeffect" src="img/icons/facebook.png"> on facebook</a>
+                    <a href="#"><img class="greyeffect" src="img/icons/linkedin.png"> on linkedin</a>
+                    <a href="#"><img class="greyeffect" src="img/icons/twitter.png"> on twitter</a>
+                    <a href="#"><img class="greyeffect" src="img/icons/youtube.png"> on youtube</a>
+                </div>
+            </div>
 
         </div>
-        <p class="contact"><a href="">Contact</a></p>
+    </section>
+    <!-- End Previous Footer Social Media -->
 
+    <footer>
+        <p class="name"> &copy; 2020 FRS. All rights reserved.</p>
     </footer>
     <!-- Footer -->
     <a href="#" id="goTop"><i class="fas fa-arrow-circle-up"></i></a>

@@ -1,4 +1,5 @@
 $().ready(() => {
+
     'use strict'
 
     /* Show and Hide mobile menu*/
@@ -51,20 +52,24 @@ $().ready(() => {
 
     let nav = $('nav');
     let frs = $('.frs');
+
+
     // Scroll functions
-    $(window).scroll(function() {
+
+    $(document).scroll(function() {
 
         let separator = $('.separator').offset().top;
-        let position = $(window).scrollTop() + 103;
+        let position = $(window).scrollTop() + 120;
 
         // Change navbar to white-bg and black-color
         if (position > separator) {
+
             nav.addClass('bg-white shadow black-text');
             $('.a-nav').addClass('black');
             frs.css('display', 'inline');
-        }
-        // Change navbar to default
-        if (position <= separator) {
+
+        } else {
+
             nav.removeClass('bg-white shadow');
             $('.a-nav').removeClass('black');
             frs.css('display', 'none');
@@ -78,7 +83,20 @@ $().ready(() => {
         } else {
             $('#goTop').removeClass('move');
         }
+
     });
+
+    // Set transparent NAV only at index.*
+    let url = $(location).attr('href');
+    let page = url.split('/');
+    page = (page[page.length - 1]).split('.')[0];
+
+    if (page != 'index') {
+        nav.addClass('bg-white shadow black-text');
+        $('.a-nav').addClass('black');
+        frs.css('display', 'inline');
+    }
+
 
 
     // GoTop movement to TOP
@@ -103,6 +121,46 @@ $().ready(() => {
             proyectos[i].children[0].classList.remove('filteroff');
         });
     }
+
+    // form animation line
+    const nameInput = $('#input-name');
+    const focusName = $('.focus-name');
+
+    const emailInput = $('#input-email');
+    const focusEmail = $('.focus-email');
+
+    const spanUser = $('.focus-text-name');
+    const spanEmail = $('.focus-text-email');
+
+    nameInput.focus(() => {
+        focusName.addClass('focus-dos');
+        spanUser.addClass('focus-dos-text');
+    });
+
+    nameInput.blur(() => {
+        focusName.removeClass('focus-dos');
+        if (nameInput[0].value == 0) {
+            spanUser.removeClass('focus-dos-text');
+        }
+    });
+
+    emailInput.focus(() => {
+        focusEmail.addClass('focus-dos');
+        spanEmail.addClass('focus-dos-text');
+    });
+
+    emailInput.blur(() => {
+        focusEmail.removeClass('focus-dos');
+
+        if (emailInput[0].value == 0) {
+            spanEmail.removeClass('focus-dos-text');
+        }
+
+    });
+
+
+
+
 
 
 });
