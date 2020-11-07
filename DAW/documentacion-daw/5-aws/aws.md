@@ -9,12 +9,15 @@
   - [Probar el servidor LAMP](#probar-el-servidor-lamp-1)
   - [Proteger el servidor de base de datos](#proteger-el-servidor-de-base-de-datos)
   - [Instalar phpMyAdmin](#instalar-phpmyadmin)
+    - [UBUNTU](#ubuntu)
 - [FileZilla](#filezilla)
 
 # AWS
  Tutorial EC" en google
 
  [enlace](https://docs.aws.amazon.com/ec2/index.html)
+ [enlace]()
+
 ## **Crear claves**
 Desde la instancia, deberemos crear un par de claves.
 
@@ -378,6 +381,107 @@ Ahora nos dirigimos al archivo `.conf` que queremos proteger y lo editamos y agr
 </Directory>
 
 ~~~
+
+### UBUNTU
+
+Crear un grupo de seguridad:
+
+Regla SSH siempre o no podremos conectarnos de manera remota:
+
+Elegimos los puertos que nos indican, por defecto de http ES EL 80.
+![imagen](img/captura-7.png)
+Lanzamos la instancia, le asignamos el grupo de seguridad, y le decimos la par de claves que vamos a usar.
+
+Nos conectamos `pc-agil-centros.pem` `usuario`@`ip`:
+~~~
+ssh -i pc-agil-centros.pem ubuntu@52.90.41.221
+~~~
+
+Instalamos apache:
+~~~
+$ sudo apt install apache2
+~~~
+
+Comprobamos el estado de apache:
+
+~~~
+$ sudo systemctl status apache2
+~~~
+
+En ubuntu por defecto se habilita apache y se arranca sólo.
+
+
+Dar permisos de usuario donde `ubuntu` es nuestro usuario:
+~~~
+$ sudo usermod -a -G www-data ubuntu
+~~~
+exit y volver a entrar, si escribimos `groups` deberiamos de estar en el grupo `www-data`
+
+~~~
+sudo chown -R ubuntu:www-data /var/www
+
+sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
+
+find /var/www -type f -exec sudo chmod 0664 {} \;
+~~~
+Ahora en el directorio www deberiamos de tener permisos
+
+![imagen](img/captura-8.png)
+
+Ahora dentro del directorio `html` creamos 2 directorios y dentro de cada uno su correspondientes index.html
+~~~
+mkdir biblioteca
+mkdir taller
+~~~
+
+
+~~~
+sudo nano etc/apache2/sites-available/taller.conf
+
+<VirtualHost *:80>
+  DocumentRoot /var/www/html/taller
+</VirtualHost>
+
+~~~
+si comprobamos el directorio sites-enabled, podemos comprobar que sólo está el 000-default....
+
+Le decimos, sudo apache2 enable site `taller` para habilitar el sitio:
+~~~
+sudo a2ensite taller
+
+apachectl configtest
+
+sudo systemctl reload apache2
+~~~
+
+
+
+Desabilitamos el sitio por defecto
+~~~
+sudo a2dissite 000-default
+~~~
+Reiniciamos apache y ya deberia funcionar
+
+ahora en creamos el .conf de biblioteca de esta forma:
+
+~~~
+Listen 81
+<VirtualHost *:81>
+  DocumentRoot /var/www/html/biblioteca
+</VirtualHost>
+~~~
+Habilitamos la nueva web
+~~~
+sudo a2ensite biblioteca
+~~~
+
+Ahora deberia de funcionar en el puerto 81
+
+
+
+
+
+
 
 
 # FileZilla
