@@ -1,24 +1,23 @@
-- [AWS](#aws)
-  - [**Crear claves**](#crear-claves)
-  - [**Grupos de seguridad**](#grupos-de-seguridad)
-    - [Reglas de entrada](#reglas-de-entrada)
-  - [Instancias](#instancias)
-- [Instalación de un servidor web LAMP en Amazon Linux 2](#instalación-de-un-servidor-web-lamp-en-amazon-linux-2)
-  - [Probar el servidor LAMP](#probar-el-servidor-lamp)
-    - [Para establecer permisos de archivo](#para-establecer-permisos-de-archivo)
-  - [Probar el servidor LAMP](#probar-el-servidor-lamp-1)
-  - [Proteger el servidor de base de datos](#proteger-el-servidor-de-base-de-datos)
-  - [Instalar phpMyAdmin](#instalar-phpmyadmin)
-- [UBUNTU](#ubuntu)
-- [FileZilla](#filezilla)
 
-# AWS
- Tutorial EC" en google
+- [1. **Amazon Linux**](#1-amazon-linux)
+  - [1.2 **Crear par de claves**](#12-crear-par-de-claves)
+  - [1.3 **Grupos de seguridad**](#13-grupos-de-seguridad)
+    - [1.3.1 **Reglas de entrada grupo de seguridad**](#131-reglas-de-entrada-grupo-de-seguridad)
+  - [1.4 Instancias](#14-instancias)
+  - [1.5 Conexión con instancia](#15-conexión-con-instancia)
+- [2. Instalación de un servidor web LAMP en Amazon Linux 2](#2-instalación-de-un-servidor-web-lamp-en-amazon-linux-2)
+  - [2.1 Instalación Apache, MariaDB](#21-instalación-apache-mariadb)
+  - [2.1 Para establecer permisos de archivo](#21-para-establecer-permisos-de-archivo)
+  - [2.2 Probar el servidor LAMP](#22-probar-el-servidor-lamp)
+  - [2.3 Proteger el servidor de base de datos](#23-proteger-el-servidor-de-base-de-datos)
+  - [2.4 Instalar phpMyAdmin](#24-instalar-phpmyadmin)
+  - [2.5 Cómo servir 2 webs con Apache](#25-cómo-servir-2-webs-con-apache)
+  - [Proteger directorio](#proteger-directorio)
 
- [enlace](https://docs.aws.amazon.com/ec2/index.html)
- [enlace]()
+# 1. **Amazon Linux**
 
-## **Crear claves**
+## 1.2 **Crear par de claves**
+
 Desde la instancia, deberemos crear un par de claves.
 
 pem -> Mac o Linux
@@ -26,29 +25,43 @@ ppk -> Linux
 
 Guarda la clave en un lugar seguro.
 
-## **Grupos de seguridad**
+
+## 1.3 **Grupos de seguridad**
+
 En los grupos de seguridad, estableceremos reglas para regular que tipo de tráfico va a permitir el servidor.
 
 Los grupos de seguridad vienen dados por zonas, si creamos uno en Virginia, sólo funcionará en Virgina. Por ello al crearlo le pondremos también el nombre de la zona para identificarlo.
 
 ![imagen](img/captura-1.png)
 
-### Reglas de entrada
-Tipo: HTTP
-Origen: Mi ip o cualquier lugar
-Tipo: HTTPS
-Origen: Mi ip o cualquier lugar
-Tipo: SSH
-Origen: Mi ip
 
-Si cambia la ip nuestra, no podremos acceder.
 
-Finalizar y Crear grupo de seguridad
-[]()
+### 1.3.1 **Reglas de entrada grupo de seguridad**
 
-## Instancias
+![imagen](img/captura-7.png)
+1. `Tipo`: HTTP (puerto 80) ==== `Origen`: Mi ip o cualquier lugar
+
+2. `Tipo`: TCP (puerto a elegir) ==== `Origen`: Mi ip o cualquier lugar
+
+3. `Tipo`: SSH === `Origen`: Mi ip
+
+En caso de no pedirnos puerto 80, no crearemos HTTP y sólo crearemos por TCP los puertos correspondientes.
+
+La regla de entrada SSH debe estar siempre o no podremos conectarnos de forma remota.
+
+Si cambia nuestra IP que tenemos en ese momento, no podremos acceder.
+Puede ocurrir al reiniciar el router.
+
+Darle a `Finalizar y Crear grupo de seguridad`
+
+
+
+
+## 1.4 Instancias
 Instancias > Lanzar instancia. Las que ponen `Free tier eligible` son gratuitas.
 Seleecionamos la que queremos pulsando `Select`.
+
+En nuestro caso `AMAZON LINUX EC2`.
 
 `Review and Launch` a la máquina que queremos.
 Nos llevará a la página de la instancia.
@@ -59,85 +72,21 @@ Le damos a `Launch` y nos avisa de la clave que hay que elegir, y que sabemos qu
 
 Si todo ha ido correcto, `nos dirá que la Instancia está siendo ejecutada`.
 
-Pasamos a ver las instancias.
 
-Abriremos la consola y con el comando siguiente agregremos nuestro archivo con las keys
-`ssh -i /path/my-key-pair.pem my-instance-user-name@my-instance-public-dns-name`
+## 1.5 Conexión con instancia
 
-vamos al directorio home de la máquina.
-
-1. Instalar apache
+Nos conectamos mediante el siguiente comando `ssh -i **clave.pem** **usuario**@**dns o ip**`:
 ~~~
-yum install httpd
+ssh -i pc-agil-centros.pem ec2-user@52.90.41.221
 ~~~
-Ver que versión de apache tenemos instalada
-~~~
-httpd -v
-~~~
-Ver el estado del servicio
-~~~
-sudo systemctl status httpd
-~~~
-Apache escucha un puerto, y en función de lo que le llegue envia la petición al módulo que corresponda y devuelve lo que se esté pidiendo.
-
-Activar apache:
-~~~
-sudo systemctl enable httpd
-~~~
-
-Ejecutar el servicio:
-~~~
-$ sudo systemctl start httpd
-~~~
-
-Comprobamos el stado de apache de nuevo: 
-~~~
-$ sudo systemctl status httpd
-~~~
-![image](img/captura-3.png)
-
-Introducimos la ip en el navegador `54.164.130.214`, y nos abre la test page de `Apache`.
-
-Acceder al directorio donde se almacenan las webs:
-~~~
-$ cd /var/www
-~~~
-
-Creamos nuestro index.html y creamos nuestra web
-~~~
-$ cd html
-$ sudo nano index.html
-~~~
-
-Instalar manual de Apache
-~~~
-$ sudo yum install httpd-manual
-~~~
-
-Acceder
-~~~
-$ sudo nano /etc/httpd/conf/httpd.conf
-~~~
-
-Cerrar sesion de la máquina
-~~~
-exit
-~~~
-
-Pasamos a la página de AWS, seleccionamos la instancia y buscamos la pestaña de acciones:
-![imagen](img/captura4.png)
-
-Estado de la instancia > Terminar instancia
-
-![imagen](img/captura-5.png)
 
 
 
-https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html#setting-file-permissions-2
 
-# Instalación de un servidor web LAMP en Amazon Linux 2
+# 2. Instalación de un servidor web LAMP en Amazon Linux 2
+https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
 
-## Probar el servidor LAMP
+## 2.1 Instalación Apache, MariaDB
 
 1. Conectarse a la instancia.
 2. Para asegurarse de que todos los paquetes de software están actualizados, realice una actualización rápida del software en la instancia. Este proceso puede durar unos minutos, pero es importante realizarlo para asegurarse de que tiene las actualizaciones de seguridad y las correcciones de errores más recientes. La opción -y instala las actualizaciones sin necesidad de confirmación. Si le gustaría examinar las actualizaciones antes de la instalación, puede omitir esta opción. 
@@ -180,7 +129,7 @@ Utilice el comando systemctl para configurar el servidor web Apache de forma que
 $ sudo systemctl is-enabled httpd
 ~~~
 
-### Para establecer permisos de archivo
+## 2.1 Para establecer permisos de archivo
 
 1. Añada el usuario (en este caso, el usuario ec2-user) al grupo apache.
 ~~~
@@ -217,7 +166,7 @@ $ sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
 $ find /var/www -type f -exec sudo chmod 0664 {} \;
 ~~~
 
-## Probar el servidor LAMP
+## 2.2 Probar el servidor LAMP
 
 Si todo está correcto podemos crear un archivo php y acceder a él:
 ~~~
@@ -236,7 +185,7 @@ Eliminar el archivo creado anteriormente `phpinfo.php`:
 $ rm /var/www/html/phpinfo.php
 ~~~
 
-## Proteger el servidor de base de datos
+## 2.3 Proteger el servidor de base de datos
 
 Iniciar servidor MAriaDB
 ~~~
@@ -260,7 +209,7 @@ En caso de querer usarla, con el siguiente comando MariaDB se iniciará al arran
 $ sudo systemctl enable mariadb
 ~~~
 
-## Instalar phpMyAdmin
+## 2.4 Instalar phpMyAdmin
 
 Instalar dependencias:
 ~~~
@@ -300,6 +249,10 @@ Entrar en nuestra direccion ip:
 
 Usuario: `root` y nuestra `password`
 
+
+## 2.5 Cómo servir 2 webs con Apache
+
+Nos dirigimos al directorio raiz donde ubicamos las páginas:
 ~~~
 $ mkdir academia
 $ mkdir tienda
@@ -340,20 +293,25 @@ Agregar otra página web en otro puerto, en este caso el 8080
 
 Creamos los pasos anteriores a diferencia del `conf` que le tendremos que indicar que escuche el puerto 8080.
 ~~~
+$ sudo nano academia.conf
+~~~ 
+
+~~~
 Listen 8080
 <VirtualHost *:8080>
   DocumentRoot /var/www/academia
 </VirtualHost>
 ~~~
 
-Ahora en nuestra web si accedemos con la ip normalnos abrirá una web, si añadimos el puerto :8080 nos abrirá otra.
+Ahora en nuestra web si accedemos con la ip normal nos abrirá una web, si añadimos el puerto :8080 nos abrirá otra.
 
-Un servidor apache puede servir a distintos dominios y distintas ip's.
+## Proteger directorio
+
 
 Creamos una página dentro de tienda
 ~~~
-$ mkdir /var/www/www/tienda/admin
-$ nano /var/www/www/tienda/admin/index.html
+$ mkdir /var/www/tienda/admin
+$ nano /var/www/tienda/admin/index.html
 ~~~
 
 Creamos una carpeta para guardar las credenciales de usuarios
@@ -371,7 +329,8 @@ $ sudo htpasswd -c /etc/httpd/password/passwords-admin `nombreusuario`
 password-admin es el nombre del archivo que vamos a crear.
 
 
-Ahora nos dirigimos al archivo `.conf` que queremos proteger y lo editamos y agregamos lo siguiente
+Ahora nos dirigimos al archivo `.conf` que queremos proteger  en nuestro caso el de tienda y lo editamos y agregamos lo siguiente
+
 ~~~
 <Directory "/var/www/tienda/admin">
   AuthType Basic
@@ -381,120 +340,3 @@ Ahora nos dirigimos al archivo `.conf` que queremos proteger y lo editamos y agr
 </Directory>
 
 ~~~
-
-# UBUNTU
-
-Crear un grupo de seguridad:
-
-Regla SSH siempre o no podremos conectarnos de manera remota:
-
-Elegimos los puertos que nos indican, por defecto de http ES EL 80.
-![imagen](img/captura-7.png)
-Lanzamos la instancia, le asignamos el grupo de seguridad, y le decimos la par de claves que vamos a usar.
-
-Nos conectamos `pc-agil-centros.pem` `usuario`@`ip`:
-~~~
-ssh -i pc-agil-centros.pem ubuntu@52.90.41.221
-~~~
-
-Instalamos apache:
-~~~
-$ sudo apt install apache2
-~~~
-
-Comprobamos el estado de apache:
-
-~~~
-$ sudo systemctl status apache2
-~~~
-
-En ubuntu por defecto se habilita apache y se arranca sólo.
-
-
-Dar permisos de usuario donde `ubuntu` es nuestro usuario:
-~~~
-$ sudo usermod -a -G www-data ubuntu
-~~~
-exit y volver a entrar, si escribimos `groups` deberiamos de estar en el grupo `www-data`
-
-~~~
-sudo chown -R ubuntu:www-data /var/www
-
-sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
-
-find /var/www -type f -exec sudo chmod 0664 {} \;
-~~~
-Ahora en el directorio www deberiamos de tener permisos
-
-![imagen](img/captura-8.png)
-
-Ahora dentro del directorio `html` creamos 2 directorios y dentro de cada uno su correspondientes index.html
-~~~
-mkdir biblioteca
-mkdir taller
-~~~
-
-
-~~~
-sudo nano etc/apache2/sites-available/taller.conf
-
-<VirtualHost *:80>
-  DocumentRoot /var/www/html/taller
-</VirtualHost>
-
-~~~
-si comprobamos el directorio sites-enabled, podemos comprobar que sólo está el 000-default....
-
-Le decimos, sudo apache2 enable site `taller` para habilitar el sitio:
-~~~
-sudo a2ensite taller
-
-apachectl configtest
-
-sudo systemctl reload apache2
-~~~
-
-
-
-Desabilitamos el sitio por defecto
-~~~
-sudo a2dissite 000-default
-~~~
-Reiniciamos apache y ya deberia funcionar
-
-ahora en creamos el .conf de biblioteca de esta forma:
-
-~~~
-Listen 81
-<VirtualHost *:81>
-  DocumentRoot /var/www/html/biblioteca
-</VirtualHost>
-~~~
-Habilitamos la nueva web
-~~~
-sudo a2ensite biblioteca
-~~~
-
-Ahora deberia de funcionar en el puerto 81
-
-
-
-
-
-
-
-
-# FileZilla
-
-Pulsar archivo, gestor de sitios...
-
-![imagen](img/filezilla.png)
-
-Pulsar Nuevo sitio:
-1. Introducir nombre
-2. Introducir IP Servidor y Puerto (22 por defecto)
-3. Protocolo: SFTP - SSH File Transfer Protocol
-4. Modo de acceso: Key File
-5. Usuario: ec2-user
-
-![imagen](img/filezilla2.png)
