@@ -1,5 +1,6 @@
 # FileZilla
 
+## Conexión con instancia
 Pulsar archivo, gestor de sitios...
 
 ![imagen](img/filezilla.png)
