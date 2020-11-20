@@ -15,11 +15,17 @@
   - [1.8 **Instalar phpMyAdmin**](#18-instalar-phpmyadmin)
   - [1.9 **Autenticación BASIC**](#19-autenticación-basic)
   - [2.0 **Autenticación DIGEST**](#20-autenticación-digest)
+    - [2.1 Crear archivo de usuarios y passwords DIGEST](#21-crear-archivo-de-usuarios-y-passwords-digest)
+    - [2.2 Editar .conf](#22-editar-conf)
 
 # **Amazon Linux**
 
+* * * 
+
 ## 1.1 **Acceder a AWS Educate**
 Entrar [aquí](https://www.awseducate.com/signin/SiteLogin)
+
+* * * 
 
 ## 1.2 **Crear par de claves**
 
@@ -30,6 +36,7 @@ ppk -> Linux
 
 Guarda la clave en un lugar seguro.
 
+* * *
 
 ## 1.3 **Grupos de seguridad**
 
@@ -59,7 +66,7 @@ Puede ocurrir al reiniciar el router.
 
 Darle a `Finalizar y Crear grupo de seguridad`
 
-
+* * *
 
 ## 1.4 **Instancias**
 Instancias > Lanzar instancia. Las que ponen `Free tier eligible` son gratuitas.
@@ -77,6 +84,8 @@ Le damos a `Launch` y nos avisa de la clave que hay que elegir, y que sabemos qu
 Si todo ha ido correcto, `nos dirá que la Instancia está siendo ejecutada`.
 
 
+* * *
+
 ## 1.5 **Conexión con instancia**
 
 Nos conectamos mediante el siguiente comando `ssh -i **clave.pem** **usuario**@**dns o ip**`:
@@ -85,9 +94,11 @@ ssh -i pc-agil-centros.pem ec2-user@52.90.41.221
 ~~~
 
 
-
+* * * 
 ## 1.6 **Instalación de un servidor web LAMP en Amazon Linux 2**
 https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
+
+
 
 ### 1.6.1 **Instalación Apache, MariaDB**
 
@@ -98,7 +109,7 @@ https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-
 $ sudo yum update -y
 ~~~
 
-3. Instale los repositorios lamp-mariadb10.2-php7.2 y php7.2 Amazon Linux Extras para obtener las versiones más recientes de los paquetes LAMP MariaDB y PHP de Amazon Linux 2.
+3. Instale los repositorios lamp-mariadb10.2-php7.2 y php7.2 Amazon Linux Extras para obtener las versiones más recientes de los paquetes LAMP MariaDB y PHP de Amazon Linux 2. Instalación dependencias.
 
 ~~~
 $ sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
@@ -131,6 +142,8 @@ Utilice el comando systemctl para configurar el servidor web Apache de forma que
 ~~~
 $ sudo systemctl is-enabled httpd
 ~~~
+
+
 
 ### 1.6.2 **Establecer permisos de directorio**
 
@@ -170,6 +183,7 @@ $ sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
 ~~~
 $ find /var/www -type f -exec sudo chmod 0664 {} \;
 ~~~
+
 
 ### 1.6.3 **Probar el servidor LAMP**
 
@@ -214,10 +228,11 @@ En caso de querer usarla, con el siguiente comando MariaDB estableceremos por de
 $ sudo systemctl enable mariadb
 ~~~
 
+* * * 
 
 ## 1.7 **Cómo servir 2 webs con Apache**
 
-Nos dirigimos al directorio raiz donde ubicamos las páginas:
+Nos dirigimos al directorio `html` donde ubicamos las páginas:
 ~~~
 $ mkdir academia
 $ mkdir tienda
@@ -239,7 +254,7 @@ $ sudo nano tienda.conf
 Con esto le decimos que creamos un virtualhost que se puede acceder desde cualquier IP con el puerto 80, con DocumentRoot le decimos el directorio de la carpeta donde está ubicada la web, y él ya sen encargará de buscar el index.html, .php, etc..
 ~~~
 <VirtualHost *:80>
-    DocumentRoot /var/www/tienda
+    DocumentRoot /var/www/html/tienda
 </VirtualHost>
 ~~~
 
@@ -264,13 +279,14 @@ $ sudo nano academia.conf
 ~~~
 Listen 8080
 <VirtualHost *:8080>
-  DocumentRoot /var/www/academia
+  DocumentRoot /var/www/html/academia
 </VirtualHost>
 ~~~
 
-## 1.8 **Instalar phpMyAdmin**
+* * * 
 
-Instalar dependencias:
+## 1.8 **Instalar phpMyAdmin**
+Procedemos a instalar dependencias:
 ~~~
 $ sudo yum install php-mbstring -y
 ~~~
@@ -284,9 +300,9 @@ Reiniciar php-fpm:
 ~~~
 $ sudo systemctl restart php-fpm
 ~~~
-Ir a la raíz de documentos Apache:
+Entramos al directorio de la página en donde vamos a implementar PhpMyAdmin:
 ~~~
-cd /var/www/
+cd /var/www/html/academia
 ~~~
 
 Seleccionar el paquete de phpMyAdmin mas reciente, crear la carpeta phpmyadmin y eliminar el .tar
@@ -310,6 +326,8 @@ Usuario: `root` y nuestra `password`
 
 Ahora en nuestra web si accedemos con la ip normal nos abrirá una web, si añadimos el puerto :8080 nos abrirá otra.
 
+* * * 
+
 ## 1.9 **Autenticación BASIC**
 
 
@@ -323,7 +341,6 @@ Creamos una carpeta para guardar las credenciales de usuarios
 ~~~
 $ sudo mkdir /etc/httpd/password
 ~~~
-
 
 ~~~
 $ sudo htpasswd -c /etc/httpd/password/passwords-admin admin
@@ -345,6 +362,44 @@ Ahora nos dirigimos al archivo `.conf` que queremos proteger  en nuestro caso el
 </Directory>
 ~~~
 
+Reiniciamos apache y comprobamos si el directorio está protegido
+~~~
+$ sudo systemctl restart apache2
+~~~
+
+* * *
+
 ## 2.0 **Autenticación DIGEST**
+
+
+### 2.1 Crear archivo de usuarios y passwords DIGEST
+Crear directorio a proteger... y activar password digest, para ello debemos pasar como parámetro un `realm` y el `usuario`. El realm deberemos colocarlo exactamente igual en el .`conf` con `AuthName`.
+~~~
+$ sudo htdigest -c /etc/httpd/password/passwords-digest "ENCHUFES" president
+~~~
+
+### 2.2 Editar .conf
+Editar el .conf para agregar la identificación DIGEST:
+~~~
+
+<VirtualHost *:80>
+   DocumentRoot /var/www/diputacion
+</VirtualHost>
+
+<Directory "/var/www/diputacion/enchufes">
+  AuthType Digest
+  AuthName "ENCHUFES"
+  AuthUserfile /etc/httpd/password/passwords-digest
+  Require valid-user
+</Directory>
+
+~~~
+
+Comprobamos sintaxis, y si recibimos un `Syntax OK`, recargamos apache y listo!
+~~~
+$ sudo apachectl configtest
+
+$ sudo systemctl restart apache2
+~~~
 
 

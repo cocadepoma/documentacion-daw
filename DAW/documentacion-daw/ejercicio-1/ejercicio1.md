@@ -20,6 +20,7 @@ $ cd ejercicio-1
 ~~~
 
 Es momento de crear nuestro **script de bash**. Para ello introducimos el siguiente comando, que nos creará el archivo y entrará directamente al archivo para editarlo.
+
 ~~~
 $ nano script.sh
 ~~~
