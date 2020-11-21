@@ -8,7 +8,6 @@
   - [1.5 Autenticación BASIC](#15-autenticación-basic)
     - [1.5.1 Crear archivo de claves](#151-crear-archivo-de-claves)
     - [1.5.2 Editar .conf](#152-editar-conf)
-    - [1.5.3 Comprobar Sintaxis y reiniciar Apache](#153-comprobar-sintaxis-y-reiniciar-apache)
     - [1.5.3 (opcional) Agregar grupos](#153-opcional-agregar-grupos)
   - [1.6 Autenticación DIGEST](#16-autenticación-digest)
     - [1.6.1 Carga módulo](#161-carga-módulo)
@@ -90,27 +89,22 @@ $ ssh -i pc-agil-centros.pem ubuntu@52.90.41.221
 * * *
 ## 1.3 Instalación Apache
 
-Instalamos apache:
+1. Instalamos apache y después comprobamos si se ha iniciado y arrancado (lo hace por defecto):
 ~~~
 $ sudo apt install apache2
-~~~
-
-Comprobamos el estado de apache:
-
-~~~
 $ sudo systemctl status apache2
 ~~~
 
-Por lo que podemos observar, en ubuntu por defecto se habilita apache y se arranca sólo con lo que no necesitamos hacer nada más.
+Como habremos observado, en ubuntu por defecto se habilita apache y se arranca sólo con lo que no necesitamos hacer nada más.
 
 
-Dar permisos de usuario al directorio `www` donde `ubuntu` es nuestro usuario:
+2. Dar permisos de usuario al directorio `www`, dónde `ubuntu` es nuestro usuario. Deberemos de hacer `exit` y volver a entrar para observar, si ingresamos `groups` en la consola, deberiamos de estar en el grupo `www-data`.
+
 ~~~
 $ sudo usermod -a -G www-data ubuntu
 ~~~
-Debermos de hacer `exit` y volver a entrar, si escribimos `groups` deberiamos de estar en el grupo `www-data`.
 
-Seguimos para dar permisos de escritura recursivamente al directorio:
+3. Seguimos para dar permisos de escritura recursivamente al directorio:
 ~~~
 $ sudo chown -R ubuntu:www-data /var/www
 
@@ -123,27 +117,30 @@ Ahora en el directorio www deberiamos de tener permisos
 ![imagen](img/captura-8.png)
 
 * * *
+
 ## 1.4 Creación de 2 directorios para 2 páginas
 
-Ahora dentro del directorio `html` creamos 2 directorios y dentro de cada uno su correspondientes index.html
+1. Ahora dentro del directorio `html` creamos 2 directorios y dentro de cada uno su correspondientes index.html
 ~~~
 $ mkdir biblioteca
 $ mkdir taller
 ~~~
 
-Creamos el .conf en el directorio etc/apache2/sites-available/nombre.conf:
+2. Creamos el .conf en el directorio `/etc/apache2/sites-available/nombre.conf` y escribiremos lo siguiente:
 
 ~~~
 $ sudo nano etc/apache2/sites-available/taller.conf
-
+~~~
+~~~
 <VirtualHost *:80>
   DocumentRoot /var/www/html/taller
 </VirtualHost>
 
 ~~~
-Si comprobamos el directorio sites-enabled, podemos comprobar que sólo está el 000-default....
+3. Si comprobamos el directorio `/etc/apache2/sites-enabled/`, podemos observar que sólo está activo el 000-default. Debemos de habilitar nuestros `.conf` para que comiencen a funcionar.
 
-Le decimos, sudo apache2 enable site `taller` para habilitar el sitio que deseamos sudo a2ensite **nombre**, no es necesario poner .conf:
+
+4. Le decimos, sudo apache2 enable site `taller` para habilitar el sitio que deseamos sudo a2ensite **nombre**, no es necesario poner la extensión `.conf`, seguidamente realizamos un configtest para comprobar sintaxis y reiniciamos Apache si todo está correcto:
 ~~~
 $ sudo a2ensite taller
 
@@ -153,13 +150,18 @@ $ sudo systemctl reload apache2
 ~~~
 
 
-Desabilitamos el sitio por defecto
+5. Debemos deshabilitar el sitio por defecto para que funcionen nuestros sitios, para deshabilitar:
 ~~~
 $ sudo a2dissite 000-default
 ~~~
-Reiniciamos apache y ya deberia funcionar
 
-Ahora en creamos el .conf de biblioteca de esta forma, hay que tener en cuenta que al no ser el puerto por defecto, hemos de comenzar con Listen **numero de puerto**:
+6. Reiniciamos apache y ya deberia funcionar
+
+~~~
+$ sudo systemctl reload apache2
+~~~
+
+7. Ahora en creamos el .conf de biblioteca de esta forma, hay que tener en cuenta que al no ser el puerto por defecto, hemos de comenzar con Listen **numero de puerto**:
 
 ~~~
 Listen 81
@@ -167,28 +169,34 @@ Listen 81
   DocumentRoot /var/www/html/biblioteca
 </VirtualHost>
 ~~~
-Habilitamos la nueva web
+
+8. Habilitamos la nueva web
 ~~~
 $ $ sudo a2ensite biblioteca
 ~~~
 
-Ahora deberia de funcionar la web en el puerto 81
+9. Reiniciamos apache y ya deberia funcionar ambas webs en sus respectivos puertos.
+
+~~~
+$ sudo systemctl reload apache2
+~~~
+
 * * *
 
 ## 1.5 Autenticación BASIC
 
 ### 1.5.1 Crear archivo de claves
-Ahora debemos crear el archivo que almacenará las claves, y el que deberemos indicar en el `.conf` mediante su ruta para proteger ese directorio, en el caso de que el archivo ya esté creado, no pondremos `-c`:
+
+Ahora debemos crear el archivo que almacenará las claves, y el que deberemos indicar en el `.conf` mediante su ruta para proteger ese directorio, en el caso de que el archivo ya esté creado, no pondremos `-c`, después se nos solicitará introducir una contraseña 2 veces.
 ~~~
-sudo mkdir /etc/apache2/password
+sudo mkdir /etc/apache2/passwords
 
-sudo htpasswd -c /etc/apache2/password/passwords-admin nombre_usuario
+sudo htpasswd -c /etc/apache2/passwords/passwords-admin nombre_usuario
 
 ~~~
-Se nos solicitará introducir una contraseña 2 veces para confirmar.
-
 
 ### 1.5.2 Editar .conf
+
 Una vez creado el directorio que queremos proteger, nos dirigimos a su `.conf` y lo editamos de la forma siguiente:
 ~~~
 Listen 81
@@ -205,9 +213,7 @@ Listen 81
 ~~~
 
 De esta forma, cuando un usuario quiera acceder al directorio administración, deberá estar autenticado.
-
-### 1.5.3 Comprobar Sintaxis y reiniciar Apache
-Comprobamos sintaxis y si recibimos un OK, recargamos apache
+Comprobamos sintaxis y si recibimos un OK, recargamos apache:
 ~~~
 $ sudo apachectl configtest
 
@@ -256,16 +262,17 @@ $ sudo a2enmod auth_digest
 $ sudo systemctl restart apache2
 ~~~
 
+
 ### 1.6.2 Creación Fichero y Usuarios
-Nos dirigimos a la carpeta de configuración de apache y crearemos un fichero de claves, `-c` para crearlo en caso de que no existiera. Debemos pasarle como parámetro un string entre comillas que luego pondremos de la misma forma en el `.conf`, y como segundo parámetro el nombre de usuario.
+
+1. Nos dirigimos a la carpeta de configuración de apache y crearemos un fichero de claves, `-c` para crearlo en caso de que no existiera. Debemos pasarle como parámetro un string entre comillas que luego pondremos de la misma forma en el `.conf`, y como segundo parámetro el nombre de usuario. Si todo ha ido bien nos responderá `Adding password for nombre_usuario in realm nombre_grupo` y nos solicitará introducir una password 2 veces.
 
 ~~~
-$ sudo htdigest -c /etc/apache2/password/passwords-digest "grupo1" admin
+$ sudo htdigest -c /etc/apache2/passwords/passwords-digest "grupo1" admin
 ~~~
 
-Si todo ha ido bien nos responderá `Adding password for nombre_usuario in realm nombre_grupo` y nos solicitará introducir una password 2 veces.
 
-Si queremos agregar otro usuario, deberemos de introducir el comando exactamente igual, pero quitando `-c` e introduciendo un nombre de usuario distinto, por ejemplo:
+2. Si queremos agregar otro usuario, deberemos de introducir el comando exactamente igual, pero quitando `-c` e introduciendo un nombre de usuario distinto, por ejemplo:
 
 ~~~
 $ sudo htdigest /etc/apache2/password/passwords-digest "Configuracion" admin2
@@ -299,18 +306,18 @@ $ sudo systemctl restart apache2
 * * * 
 ## 1.7 Instalación MariaDB
 
-Actualizar paquetes e instalar MariaDB
+1. Primero actualizamos paquetes e instalamos MariaDB:
 ~~~
 $ sudo apt update
 
 $ sudo apt install mariadb-server
 ~~~
 
-Hacer que el servidor de mysql sea seguro:
+2. Después debemos hacer que el servidor de mysql sea seguro:
 ~~~
 $ sudo mysql_secure_installation
 ~~~
-Nos pide la contraseña, enter porque por defecto viene vacia, y establecemos nuestra nueva contraseña, y los 4 siguientes pulsamos `Y`.
+3. Nos pedirá contraseña de root, (por defecto está vacía), pulsar `Y` para confirmar, introducimos la contraseña nueva elegida 2 veces. Nos pregunta si queremos borrar usuarios anónimos: `Y`. Deshabilitar login remoto de root: `Y`. Borrar BBDD de test: `Y`. Recargar tablas de privilegios: `Y`.
 
 * * * 
 ## 1.8 Instalación PHP
@@ -369,8 +376,6 @@ sudo systemctl restart mysql
 ~~~
 
 
-
-
 ## (No es de examen) Auntenticación .HTACCESS
 https://www.linuxenespañol.com/tutoriales/proteger-un-directorio-apache-con-contrasena/
 
@@ -413,6 +418,7 @@ $ sudo nano .htaccess
 ~~~
 
 Dentro pondremos la siguiente configuración para protegerlo:
+
 ~~~
 AuthType Basic
 AuthName "Password Required"

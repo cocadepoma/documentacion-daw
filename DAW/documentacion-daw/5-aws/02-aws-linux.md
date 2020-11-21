@@ -9,7 +9,7 @@
   - [1.6 **Instalación de un servidor web LAMP en Amazon Linux 2**](#16-instalación-de-un-servidor-web-lamp-en-amazon-linux-2)
     - [1.6.1 **Instalación Apache, MariaDB**](#161-instalación-apache-mariadb)
     - [1.6.2 **Establecer permisos de directorio**](#162-establecer-permisos-de-directorio)
-    - [1.6.3 **Probar el servidor LAMP**](#163-probar-el-servidor-lamp)
+    - [(Opcional) 1.6.3 **Probar el servidor LAMP**](#opcional-163-probar-el-servidor-lamp)
     - [1.6.4 **Proteger el servidor de base de datos**](#164-proteger-el-servidor-de-base-de-datos)
   - [1.7 **Cómo servir 2 webs con Apache**](#17-cómo-servir-2-webs-con-apache)
   - [1.8 **Instalar phpMyAdmin**](#18-instalar-phpmyadmin)
@@ -133,12 +133,13 @@ $ sudo yum install -y httpd mariadb-server
 $ sudo systemctl start httpd
 ~~~
 
-6. Utilice el comando systemctl para configurar el servidor web Apache de forma que se inicie cada vez que arranque el sistema.
+6. Utilice el comando `systemctl enable httpd` para configurar el servidor web Apache de forma que se inicie cada vez que arranque el sistema.
 
 ~~~
 $ sudo systemctl enable httpd
 ~~~
-Utilice el comando systemctl para configurar el servidor web Apache de forma que se inicie cada vez que arranque el sistema.
+
+7. Con el siguiente comando podemos comprobar si Apache se encuentra habilitado o no.
 ~~~
 $ sudo systemctl is-enabled httpd
 ~~~
@@ -152,23 +153,17 @@ $ sudo systemctl is-enabled httpd
 $ sudo usermod -a -G apache ec2-user
 ~~~
 
-2. Cerrar sesión.
+2. Cerramos sesión, conectamos de nuevo a la instancia y comprobamos mediante `groups` si pertenecemos al grupo `apache`.
 ~~~
 $ exit
-~~~
-Volver a conectar a la máquina.
-~~~
-$ ssh -i pc-agil-centros.pem ec2-user@54.164.130.214
-~~~
 
-Verificar si el usuario pertenece al grupo apache
-~~~
-[ec2-user ~]$ groups
+$ ssh -i pc-agil-centros.pem ec2-user@54.164.130**.214**
 
+$ groups
 ec2-user adm wheel apache systemd-journal
 ~~~
 
-3. Cambie la propiedad de grupo de /var/www y su contenido al grupo apache dónde **ec2-user** es nuestro usuario.
+3. Cambiar la propiedad de grupo de /var/www y su contenido al grupo apache dónde **ec2-user** es nuestro usuario.
 ~~~
 $ sudo chown -R ec2-user:apache /var/www
 ~~~
@@ -184,8 +179,9 @@ $ sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
 $ find /var/www -type f -exec sudo chmod 0664 {} \;
 ~~~
 
+6. Ahora podemos o bien crear un archivo **.php** (punto 1.6.3) para comprobar si funciona o entrar directamente desde el navegador a la ip o dns de nuestra instancia. En caso de aparecernos la pantalla **Test Page** de Apache, todo estaría correcto.
 
-### 1.6.3 **Probar el servidor LAMP**
+### (Opcional) 1.6.3 **Probar el servidor LAMP**
 
 Si todo está correcto podemos crear un archivo php y acceder a él:
 ~~~
@@ -206,17 +202,18 @@ $ rm /var/www/html/phpinfo.php
 
 ### 1.6.4 **Proteger el servidor de base de datos**
 
-Iniciar servidor MAriaDB
+1. Iniciar servidor MAriaDB
 ~~~
 $ sudo systemctl start mariadb
 ~~~
 
-Ejecute mysql_secure_installation. 
+2. Ejecute mysql_secure_installation. 
 
 ~~~
 $ sudo mysql_secure_installation
 ~~~
-Pulsar `Y` para confirmar contraseña e insertar 2 veces. `Y`, `Y`, `Y`, `Y` 
+
+3. Nos pedirá contraseña de root, (por defecto está vacía), pulsar `Y` para confirmar, introducimos la contraseña nueva elegida 2 veces. Nos pregunta si queremos borrar usuarios anónimos: `Y`. Deshabilitar login remoto de root: `Y`. Borrar BBDD de test: `Y`. Recargar tablas de privilegios: `Y`. 
 
 En el caso de no querer usar MariaDb, detener:
 ~~~
@@ -286,58 +283,51 @@ Listen 8080
 * * * 
 
 ## 1.8 **Instalar phpMyAdmin**
-Procedemos a instalar dependencias:
+
+1. Procedemos a instalar dependencias:
 ~~~
 $ sudo yum install php-mbstring -y
 ~~~
 
-Reiniciar Apache:
+2. Reiniciamos Apache y php-fpm:
 ~~~
 $ sudo systemctl restart httpd
-~~~
-
-Reiniciar php-fpm:
-~~~
 $ sudo systemctl restart php-fpm
 ~~~
-Entramos al directorio de la página en donde vamos a implementar PhpMyAdmin:
+
+3. Entramos al directorio de la página en donde vamos a implementar phpMyAdmin:
 ~~~
 cd /var/www/html/academia
 ~~~
 
-Seleccionar el paquete de phpMyAdmin mas reciente, crear la carpeta phpmyadmin y eliminar el .tar
+4. Seleccionar el paquete de phpMyAdmin mas reciente, crear la carpeta phpmyadmin y eliminar el .tar
 ~~~
 $ wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
 $ mkdir phpMyAdmin && tar -xvzf phpMyAdmin-latest-all-languages.tar.gz -C phpMyAdmin --strip-components 1
 $ rm phpMyAdmin-latest-all-languages.tar.gz
 ~~~
 
-Si MariaDB está funcionando, obviar este paso, en caso contrario:
+5. Si MariaDB está funcionando, obviar este paso, en caso contrario:
 ~~~
 $ sudo systemctl start mariadb
 ~~~
 
-Entrar en nuestra direccion ip:
+6. Entrar en nuestra direccion ip y si todo ha ido bien, nos aparecerá el login de phpMyAdmin. Cuidado con el nombre de los directorios, son `case sensitive` y deberemos de introducirlos igual en la barra de navegación.
 
-`http://direccionip/phpMyAdmin`
+Ir a `http://direccionip/phpMyAdmin`, Usuario: `root` y nuestra `password`.
 
-
-Usuario: `root` y nuestra `password`
-
-Ahora en nuestra web si accedemos con la ip normal nos abrirá una web, si añadimos el puerto :8080 nos abrirá otra.
 
 * * * 
 
 ## 1.9 **Autenticación BASIC**
 
-
-Creamos una página dentro de tienda
+1. Creamos una página dentro de tienda
 ~~~
 $ mkdir /var/www/tienda/admin
 $ nano /var/www/tienda/admin/index.html
 ~~~
 
-Creamos una carpeta para guardar las credenciales de usuarios
+2. Creamos una carpeta para guardar las credenciales de usuarios
 ~~~
 $ sudo mkdir /etc/httpd/password
 ~~~
@@ -351,10 +341,14 @@ $ sudo htpasswd -c /etc/httpd/password/passwords-admin `nombreusuario`
 password-admin es el nombre del archivo que vamos a crear.
 
 
-Ahora nos dirigimos al archivo `.conf` que queremos proteger  en nuestro caso el de tienda y lo editamos y agregamos lo siguiente
+3. Ahora nos dirigimos al archivo `.conf` que queremos proteger  en nuestro caso el de tienda y lo editamos y agregamos lo siguiente
 
 ~~~
-<Directory "/var/www/tienda/admin">
+<VirtualHost *:80>
+    DocumentRoot /var/www/html/tienda
+</VirtualHost>
+
+<Directory "/var/www/html/tienda/admin">
   AuthType Basic
   AuthName "administrador"
   AuthUserFile /etc/httpd/password/passwords-admin
@@ -362,9 +356,11 @@ Ahora nos dirigimos al archivo `.conf` que queremos proteger  en nuestro caso el
 </Directory>
 ~~~
 
-Reiniciamos apache y comprobamos si el directorio está protegido
+Comprobamos Sintaxis y si recibimos un `Sintaxis OK` reiniciamos apache y comprobamos si el directorio está protegido:
 ~~~
-$ sudo systemctl restart apache2
+$ sudo apachectl configtest
+
+$ sudo systemctl restart httpd
 ~~~
 
 * * *
@@ -373,7 +369,21 @@ $ sudo systemctl restart apache2
 
 
 ### 2.1 Crear archivo de usuarios y passwords DIGEST
-Crear directorio a proteger... y activar password digest, para ello debemos pasar como parámetro un `realm` y el `usuario`. El realm deberemos colocarlo exactamente igual en el .`conf` con `AuthName`.
+
+1. Crear directorio a proteger.
+~~~
+$ mkdir /var/www/html/academia/profesorado
+$ nano /var/www/html/academia/profesorado/index.html
+~~~
+
+2. En caso de no tener creado un directorio donde almacenar las passwords, lo creamos:
+
+~~~
+$ sudo mkdir /etc/httpd/password
+~~~
+
+3. Activar password digest, para ello debemos pasar como parámetro un `realm` y el `usuario`. El realm deberemos colocarlo exactamente igual en el .`conf` con `AuthName` o no funcionará el login. 
+
 ~~~
 $ sudo htdigest -c /etc/httpd/password/passwords-digest "ENCHUFES" president
 ~~~
@@ -399,7 +409,7 @@ Comprobamos sintaxis, y si recibimos un `Syntax OK`, recargamos apache y listo!
 ~~~
 $ sudo apachectl configtest
 
-$ sudo systemctl restart apache2
+$ sudo systemctl restart httpd
 ~~~
 
 

@@ -123,7 +123,7 @@ else
  echo Hay que pasar dos argumentos!!!
 fi
 ~~~
-Lo que hay dentro del `if`, debe ir separado de los corchetes, y el `if` del corchete también.
+Lo que hay dentro del `if`, debe ir separado de los corchetes, y el `if` del propio corchete también.
 
 1. `-eq` equals
 2. `-lw` menor que
