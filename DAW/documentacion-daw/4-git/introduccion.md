@@ -30,7 +30,7 @@ $ git config --global user.email <<email>>
 Para comprobar podemos usar:
 
 ~~~
-$ git config -–global –list
+$ git config --global --list
 ~~~
 
 ## Trabajar con GIT
@@ -99,7 +99,7 @@ Si modificamos un archivo, habría que confirmar los cambios con un commit.
     ~~~~
 
 3. Enter, enter y por defecto nos crea la clave en ~/.shh/id_rsa.pub
-4. cat ~/.ssh/id_rsa.pub y nos aparecerá la clave
+4. cat ~/.ssh/id_rsa.pub y nos aparecerá la clave, la copiamos.
 5. Ahora iniciamos sesión en GitHub y nos vamos a Settings à SSH Keys y creamos una nueva, indicando un nombre descriptivo y la clave pública que hemos copiado previamente.
 6. Introducimos en la terminal ssh -T git@github.com y deberíamos autenticarnos correctamente.
 
