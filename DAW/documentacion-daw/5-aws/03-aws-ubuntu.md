@@ -91,6 +91,7 @@ $ ssh -i pc-agil-centros.pem ubuntu@52.90.41.221
 
 1. Instalamos apache y después comprobamos si se ha iniciado y arrancado (lo hace por defecto):
 ~~~
+$ sudo apt update
 $ sudo apt install apache2
 $ sudo systemctl status apache2
 ~~~
@@ -335,9 +336,9 @@ Instalación de phpmyadmin y sus dependencias:
 $ sudo apt install phpmyadmin php-mbstring php-zip php-gd php-json php-curl
 ~~~
 
-Debemos seleccionar **apache2**, debe salir un asterisco en el cuadrado con la opción seleccionada, con el tabulador nos movemos hasta el *Ok*.
+Debemos seleccionar **apache2** pulsando espacio, debe salir un asterisco en el cuadrado con la opción seleccionada, con el tabulador nos movemos hasta el *Ok* y pulsamos enter.
 
-La siguiente ventana le decimos que **Yes**, despues introducimos una contraseña y nos devolverá a la consola, reiniciamos apache.
+La siguiente ventana le decimos que **Yes**, después nos solicitará una contraseña dos veces para el acceso a phpmyadmin, finalmente nos devolverá a la consola de ubuntu, reiniciamos apache.
 
 ~~~
 $ sudo systemctl restart apache2
@@ -367,12 +368,17 @@ ALTER USER root@localhost IDENTIFIED VIA mysql_native_password;
 
 ~~~
 
-Si volvemos a hacer la consulta, comprobaremos que ha cambiado el plugin a **mysql_native_password**.
+Si volvemos a hacer la misma consulta, comprobaremos que ha cambiado el plugin a **mysql_native_password**.
 
 Reiniciamos mysql y ya deberiamos de poder loguearnos en phpMyAdmin como `root` y la contraseña introducida en el paso de instalación de **phpMyAdmin**.
 
 ~~~
-sudo systemctl restart mysql
+$ sudo systemctl restart mysql
+~~~
+
+En caso de haber fallado en alguno de los anteriores pasos nos dará algun error, con el siguiente parámetro podremos reconfigurarlo de nuevo.
+~~~
+$ sudo dpkg-reconfigure phpmyadmin
 ~~~
 
 

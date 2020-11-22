@@ -4,7 +4,7 @@
   - [1.2 **Crear par de claves**](#12-crear-par-de-claves)
   - [1.3 **Grupos de seguridad**](#13-grupos-de-seguridad)
     - [1.3.1 **Reglas de entrada grupo de seguridad**](#131-reglas-de-entrada-grupo-de-seguridad)
-  - [1.4 **Instancias**](#14-instancias)
+  - [1.4 **Lanzar instancias**](#14-lanzar-instancias)
   - [1.5 **Conexión con instancia**](#15-conexión-con-instancia)
   - [1.6 **Instalación de un servidor web LAMP en Amazon Linux 2**](#16-instalación-de-un-servidor-web-lamp-en-amazon-linux-2)
     - [1.6.1 **Instalación Apache, MariaDB**](#161-instalación-apache-mariadb)
@@ -20,7 +20,7 @@
 
 # **Amazon Linux**
 
-* * * 
+
 
 ## 1.1 **Acceder a AWS Educate**
 Entrar [aquí](https://www.awseducate.com/signin/SiteLogin)
@@ -47,10 +47,10 @@ Los grupos de seguridad vienen dados por zonas, si creamos uno en Virginia, sól
 ![imagen](img/captura-1.png)
 
 
-
 ### 1.3.1 **Reglas de entrada grupo de seguridad**
 
 ![imagen](img/captura-7.png)
+
 1. `Tipo`: HTTP (puerto 80) ==== `Origen`: Mi ip o cualquier lugar
 
 2. `Tipo`: TCP (puerto a elegir) ==== `Origen`: Mi ip o cualquier lugar
@@ -68,7 +68,7 @@ Darle a `Finalizar y Crear grupo de seguridad`
 
 * * *
 
-## 1.4 **Instancias**
+## 1.4 **Lanzar instancias**
 Instancias > Lanzar instancia. Las que ponen `Free tier eligible` son gratuitas.
 Seleecionamos la que queremos pulsando `Select`.
 
@@ -95,6 +95,7 @@ ssh -i pc-agil-centros.pem ec2-user@52.90.41.221
 
 
 * * * 
+
 ## 1.6 **Instalación de un servidor web LAMP en Amazon Linux 2**
 https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
 
@@ -103,25 +104,26 @@ https://docs.aws.amazon.com/es_es/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-
 ### 1.6.1 **Instalación Apache, MariaDB**
 
 1. Conectarse a la instancia.
+   
 2. Para asegurarse de que todos los paquetes de software están actualizados, realice una actualización rápida del software en la instancia. Este proceso puede durar unos minutos, pero es importante realizarlo para asegurarse de que tiene las actualizaciones de seguridad y las correcciones de errores más recientes. La opción -y instala las actualizaciones sin necesidad de confirmación. Si le gustaría examinar las actualizaciones antes de la instalación, puede omitir esta opción. 
 
 ~~~
 $ sudo yum update -y
 ~~~
 
-3. Instale los repositorios lamp-mariadb10.2-php7.2 y php7.2 Amazon Linux Extras para obtener las versiones más recientes de los paquetes LAMP MariaDB y PHP de Amazon Linux 2. Instalación dependencias.
+3. Instale los repositorios lamp-mariadb10.2-php7.2 y php7.2 Amazon Linux Extras para obtener las versiones más recientes de los paquetes LAMP MariaDB y PHP de Amazon Linux 2. `Instalación dependencias`.
 
 ~~~
 $ sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 ~~~
 
-Si recibe el error que indica sudo: **amazon-linux-extras: command not found**, entonces la instancia no se lanzó con una AMI de Amazon Linux 2 (quizás estás utilizando la Amazon Linux AMI en su lugar). Puede ver la versión de Amazon Linux usando el comando siguiente: 
+Si recibimos el error **amazon-linux-extras: command not found**, es que no estamos utilizando una instancia de Amazon Linux 2. Con el siguiente comando podemos consultar nuestra versión de Amazon Linux:
 ~~~
 $ cat /etc/system-release
 ~~~
 
 
-4. Ahora que la instancia está actualizada, puede instalar los paquetes de software PHP, MariaDB y el servidor web Apache. Utilice el comando `yum install` para instalar varios paquetes de software y todas las dependencias relacionadas al mismo tiempo. 
+1. Ahora que la instancia está actualizada, puede instalar los paquetes de software PHP, MariaDB y el servidor web Apache. Utilice el comando `yum install` para instalar varios paquetes de software y todas las `dependencias` relacionadas al mismo tiempo. 
 
 ~~~
 $ sudo yum install -y httpd mariadb-server
@@ -137,11 +139,15 @@ $ sudo systemctl start httpd
 
 ~~~
 $ sudo systemctl enable httpd
+
+Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.
+
 ~~~
 
-7. Con el siguiente comando podemos comprobar si Apache se encuentra habilitado o no.
+7. Con el siguiente comando podemos comprobar si Apache se encuentra habilitado o no, debería de respondernos `enabled`.
 ~~~
 $ sudo systemctl is-enabled httpd
+enabled
 ~~~
 
 
@@ -230,6 +236,7 @@ $ sudo systemctl enable mariadb
 ## 1.7 **Cómo servir 2 webs con Apache**
 
 Nos dirigimos al directorio `html` donde ubicamos las páginas:
+
 ~~~
 $ mkdir academia
 $ mkdir tienda

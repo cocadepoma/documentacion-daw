@@ -336,8 +336,6 @@ fi
 
 para usar una herramienta de resolución de conflictos usamos el comando `git mergetool`. Esto nos permite seleccionar la herramienta que queramos de entre las que está instaladas:
 
-Si no hay ninguna 
-
 ~~~
 $ git mergetool
 ~~~
