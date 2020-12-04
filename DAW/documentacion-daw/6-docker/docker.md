@@ -53,16 +53,23 @@ un contenedor es una imagen de Debian básica.
   $ docker container --help
   ~~~
 
-- Ver imágenes y borrar. Para poder borrar una imagen, hay primero que borrar el contenedor, o forzar el borrado.
+- Ver imágenes. 
    ~~~
    $ doker image ls
-   $ docker image rm nombreimagen o IDimagen
    ~~~
+
+- Borrar un contenedor o imagen. Para poder borrar una imagen, hay primero que borrar el contenedor, o forzar el borrado.
+  ~~~
+  $ docker image rm nombre_imagen o id_imagen
+
+  $ docker container rm nombre_contenedor o id_imagen
+  ~~~
 
 - Mostrar logs de un contenedor
    ~~~
    $ docker logs nombre_contenedor
    ~~~
+
 - Reiniciar contenedor
    ~~~
    $ docker restart nombre_contenedor
@@ -73,6 +80,7 @@ un contenedor es una imagen de Debian básica.
   docker inspect httpd
   ~~~
   ![](,/../img/captura1.png)
+
 
 - Ejecutar comandos dentro del contenedor. Las `i` y `-t` crean un proceso en el contenedor que nos permitiran interactuar con el contenedor, pueden ponerse también juntas `-it`. 
 
