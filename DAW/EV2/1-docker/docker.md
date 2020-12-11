@@ -119,3 +119,105 @@ un contenedor es una imagen de Debian básica.
   ~~~
 
   Ahora podremos observar los cambios realizados en `app.py`.
+
+
+### Conectar
+~~~
+$ docker run -p 80:5000 --name miweb training/webapp
+$ docker start miweb
+$ docker stop miweb
+$ docker container rm miweb
+~~~
+
+La `p` tiene que ir seguida de los puertos.
+
+Agregando `--rm` se borrará automáticamente al pararlo.
+
+Agregando `-d` se ejecutará en segundo plano.
+
+~~~
+$ docker run -d 80:5000 --name miweb --rm -d training/webapp
+$ docker stop miweb
+~~~
+
+Copiar un contenedor de dentro de docker a nuestro disco, no hace falta indicar los puertos ya que no vamos a acceder via web:
+
+~~~
+$ docker run -p --name miweb --rm -d training/webapp
+~~~
+
+Copiar:
+`docker cp nombrecontenedor:/ruta-del-archivo ruta-destino`
+~~~
+$ docker cp miweb:/opt/webapp/app.py .
+~~~
+
+Editamos el app.py
+
+![](img/captura2.png)
+
+Creamos el archivo `Dockerfile`, exactamente igual, con la D en mayúscula y dentro del archivo pondremos las instrucciones de lo que queremos hacer.
+
+1. Primero indicar que imagen usamos como base, de cuál partimos. `FROM training/webapp`
+2. (Opcional) Indicamos el mantenedor de la imagen `MAINTAINER pacors88@gmail.com`
+3. Indicamos nuestro archivo, y la ruta donde va a ir dentro del contenedor. `COPY app.py /opt/webapp/`
+4. Resultado del archivo `Dockerfile`:
+   ~~~
+   FROM training/webapp
+   MAINTAINER pacors88@gmail.com
+   COPY app.py /opt/webapp/
+   ~~~
+5. Guardamos y pasaremos a construir una imagen.
+
+6. `docker build -t paco/nuevaweb .`
+   - `t` indica el tag de la web
+   - `.` le estamos diciendo que el archivo `Dockerfile` se encuentra en el directorio en el que nos situamos en ese momento.
+
+   Si estamos registrados hay que poner nuestro nombre de usuario antes del nombre de la imagen `nombre_usuario/nombre_imagen`
+
+7. Ahora podemos crear un contenedor de nuestra imagen.
+   ~~~
+   $ docker run -p 80:5000 --name newweb --rm paco/nuevaweb
+   ~~~
+
+![](img/captura3.png)
+![](img/captura4.png)
+
+
+## EJ2
+1. Crear imagen httpd
+    ~~~
+    $ docker run --rm -p 8080:80 httpd
+    ~~~
+    Accedemos:
+    ![](img/captura5.png)
+
+2. Crear `Dockerfile`
+   ~~~
+   $ nano Dockerfile
+
+   FROM httpd
+   MAINTAINER soyl3y3nd4@hotmail.com
+   COPY web/ /usr/local/apache2/htdocs
+   ~~~
+
+3. Construir imagen:
+   ~~~
+   $ docker build -t soyl3y3nd4/miweb:lastest .
+   ~~~
+
+4. Subir a dockerhub
+   ~~~
+   $ docker push soyl3y3nd4/apache
+   ~~~
+
+5. Borrar contenedores e imagenes locales.
+   ~~~
+    $ docker image rm imagen -f
+    $ docker container rm contenedor -f
+   ~~~
+6. Montar container con nuestro `dockerhub`
+   ~~~
+    $ docker run -p 80:80 --rm --name miweb soyl3y3nd4/apache
+   ~~~
+  
