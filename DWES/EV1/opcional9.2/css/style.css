@@ -1,0 +1,89 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.219);
+}
+
+main {
+    padding: 20px;
+}
+
+a {
+    text-decoration: none;
+}
+
+header {
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(59, 59, 59);
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header small {
+    color: white;
+}
+
+header h2 {
+    color: rgb(255, 166, 0);
+}
+
+.button {
+    padding: 5px 10px;
+    color: black;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.3s all;
+}
+
+.button:hover {
+    color: white;
+}
+
+.logoff {
+    background-color: rgb(172, 1, 1);
+}
+
+.logoff:hover {
+    background-color: red;
+}
+
+.login {
+    background-color: green;
+}
+
+.login:hover {
+    background-color: rgb(3, 173, 3);
+}
+
+.container {
+    margin: 100px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    max-width: 400px;
+    padding: 20px;
+    -webkit-box-shadow: 2px 1px 36px -7px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 2px 1px 36px -7px rgba(0, 0, 0, 0.75);
+    box-shadow: 2px 1px 36px -7px rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+}
+
+.container a {
+    color: rgb(31, 141, 4);
+    letter-spacing: 2px;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.container-dos {
+    background-color: grey;
+    margin: 20px 100px;
+}
