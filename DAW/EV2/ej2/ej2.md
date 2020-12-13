@@ -187,7 +187,7 @@ Ahora borraremos todas nuestros contenedores y nuestras imágenes. Importante re
     $ docker image rm <nombre_imagen>
     ~~~
 
-![](img/captura5.png)
+    ![](img/captura5.png)
 
 _ _ _
 
