@@ -121,7 +121,7 @@ un contenedor es una imagen de Debian básica.
   Ahora podremos observar los cambios realizados en `app.py`.
 
 
-### Conectar
+### Crear contenedor Apache y Conectar
 ~~~
 $ docker run -p 80:5000 --name miweb training/webapp
 $ docker start miweb
@@ -136,7 +136,7 @@ Agregando `--rm` se borrará automáticamente al pararlo.
 Agregando `-d` se ejecutará en segundo plano.
 
 ~~~
-$ docker run -d 80:5000 --name miweb --rm -d training/webapp
+$ docker run -p 80:5000 --name miweb --rm -d training/webapp
 $ docker stop miweb
 ~~~
 
@@ -203,7 +203,7 @@ Creamos el archivo `Dockerfile`, exactamente igual, con la D en mayúscula y den
 
 3. Construir imagen:
    ~~~
-   $ docker build -t soyl3y3nd4/miweb:lastest .
+   $ docker build -t soyl3y3nd4/miweb:latest .
    ~~~
 
 4. Subir a dockerhub
