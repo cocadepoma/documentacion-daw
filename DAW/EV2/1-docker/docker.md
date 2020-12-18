@@ -221,3 +221,158 @@ Creamos el archivo `Dockerfile`, exactamente igual, con la D en mayúscula y den
     $ docker run -p 80:80 --rm --name miweb soyl3y3nd4/apache
    ~~~
   
+
+
+### Clase 18-12-20 Construir imagen con una web.
+
+~~~
+nano Dockerfile
+
+
+ejemplo* FROM centos:centos6
+
+FROM centos:8      
+MAINTAINER soyl3y3nd4@hotmail.com
+RUN yum -y install httpd
+COPY ejemplo_docker /var/www/html/
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+EXPOSE 80
+
+~~~
+
+Para ejecutar un comando se utiliza `RUN`
+COPY para copiar los archivos donde queremos
+CMD le dice que ejecute un programa, con la `-D` le decimos, y con FOREGROUND que la ejecute en segundo plano
+`EXPOSE` 80 dice que exponga el puerto 80. Si elegimos otro puerto, habrá que especicarlo en apache.
+
+#### CMD, RUN y ENTRYPOINT son para ejecutar comandos.
+
+`RUN` generalmente se usa para instalar cosas: programas, dependencias. Este comando crea una capa.
+
+`CMD` se usa para decir que se ejecute un comando por defecto si no especificamos otro, Si especificamos otro se ejecutará el último.
+
+`ENTRYPOINT` establece un comando que se ejecutará siempre.
+
+#### Shell form
+ENV name John Dow
+RUN echo "Hello, $name"
+
+
+####  Exec form
+ENV name John Dow
+RUN ["/bin/echo", "Hello, $name"]
+
+##### Crear imagen y ejecutar un contenedor
+~~~
+$ docker build -t miweb .
+
+$ docker run --rm -p 80:80 --name web miweb
+
+~~~
+
+Si modificamos un archivo y volvemos a crear la imagen con el mismo nombre, la volverá a crear, pero cuando comience los comandos que le hemos dicho en el Dockerfile, los que sean idénticos a la capa de la imagen anterior, se copiarán directamente de la caché, sin tener que volvera a crear desde 0.
+
+### Clase 18-12-20 NETWORK.
+
+Cuando creamos un contenedor se crea en una red interna mediante el driver `bridge` en caso de no especificar nada.
+
+Vemos nuestra web y vemos `Gateway` e `IPAddress`.
+~~~
+$ docker inspect web
+~~~
+
+Observamos `Subnet` y `Gateway`:
+~~~
+$ docker inspect bridge
+~~~
+
+En caso de querer crear una red personalizada:
+
+~~~
+$ docker network create -d bridge mired
+~~~
+
+Ver que contenedores tenemos:
+~~~
+$ docker network ls
+~~~
+
+Al crear un contenedor podemos especificarlo:
+~~~
+$ docker run -p 80:80 --network=mired -d --name web miweb
+~~~
+
+Ahora si inspeccionamos el contenedor, veremos que la red es `mired`:
+~~~
+$ docker inspect web
+
+            "Networks": {
+                "mired": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "734f7c00da14"
+                    ],
+                    "NetworkID": "65ede233a26545c21105f8c38042a42c92452b5c71d8d50cb877c5c83431c859",
+                    "EndpointID": "93050288efddf7da62ddbf29579526a48a26d4ac5235797432f16b6b989d2413",
+                    "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:13:00:02",
+                    "DriverOpts": null
+                }
+            }
+
+~~~
+
+También podemos hacer que un contenedor se comparta en varias redes.
+~~~
+$ docker network connect mired web2 
+$ docker inspect web2
+
+
+            "Networks": {
+                "mired": {
+                    "IPAMConfig": {},
+                    "Links": null,
+                    "Aliases": [
+                        "fee251eb25f2"
+                    ],
+                    "NetworkID": "65ede233a26545c21105f8c38042a42c92452b5c71d8d50cb877c5c83431c859",
+                    "EndpointID": "88ebe8c1b215b8ea60b419d845d993d0403a9ab8d53cca609a10db07fcc57c11",
+                    "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:13:00:03",
+                    "DriverOpts": {}
+                },
+                "mired2": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "fee251eb25f2"
+                    ],
+                    "NetworkID": "e0942386aad88cf4d1b0357da5051a36bdfe5f0bde00f8bef92a7545dd352b5f",
+                    "EndpointID": "1bcd3058046d64211a86bc92d55d3a08d6e24f21c6179d13750f8a9232b51e15",
+                    "Gateway": "172.20.0.1",
+                    "IPAddress": "172.20.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:14:00:02",
+                    "DriverOpts": null
+                }
+            }
+
+~~~
+
+Ahora entre ellos dos, ya se pueden comunicar.
+
+
