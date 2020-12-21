@@ -368,6 +368,17 @@ main {
         align-items: center;
     }
 }
+.total {
+    border-top: 1px solid rgba(0, 0, 0, 0.11);
+    font-weight: bold;
+}
+.qtt-total {
+    margin-left: 1rem;
+    margin-right: 2rem;
+    font-weight: normal !important;
+    font-size: 1.5rem;
+    color: red;
+}
 /** FOOTER **/
 
 footer {

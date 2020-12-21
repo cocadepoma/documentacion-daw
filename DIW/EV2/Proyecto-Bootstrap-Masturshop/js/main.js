@@ -1,5 +1,4 @@
 $(document).ready(() => {
-    // TODO , repair stickynav
     $("#back-to-top").fadeOut();
     $(window).scroll(function () {
         if ($(this).scrollTop() > 400) {
@@ -107,7 +106,7 @@ $(document).ready(() => {
                           </div>
 
                           <div class='add card-footer text-center'>
-                          <a href='#' id='agregar' data-name='${productos[i].nombre}' data-id='${productos[i].id}'><i class='fas fa-cart-plus'></i>Agregar al carrito</a>
+                          <a href='#' id='agregar' data-price='${productos[i].precio}' data-name='${productos[i].nombre}' data-id='${productos[i].id}'><i class='fas fa-cart-plus'></i>Agregar al carrito</a>
                           </div>
                           
                       </div>
@@ -131,9 +130,10 @@ $(document).ready(() => {
                     add[i].addEventListener("click", (e) => {
                         e.preventDefault();
                         let name = e.target.dataset.name;
+                        let price = e.target.dataset.price;
                         swal({
                             title: `${name}`,
-                            text: `Ha sido añadido a tu cesta`,
+                            text: `Ha sido añadido a tu cesta por ${price} € `,
                             icon: "success",
                         });
 
@@ -154,17 +154,21 @@ $(document).ready(() => {
     //******************* CART ************************//
 
     let fileName = window.location.pathname;
-
+    // IF User is in CART page
     if ((fileName = "/carrito.html")) {
         let itemsAdded = [];
 
+        // GET Localstorage
         Object.keys(localStorage).forEach((i) => {
             itemsAdded.push(JSON.parse(localStorage[i]));
         });
 
+        // Print items in HTML
         if (itemsAdded.length > 0) {
             $(".no-items").hide();
-            for (let i in itemsAdded) {
+            let totalPrice = 0;
+            for (let i = 0; i < itemsAdded.length; i++) {
+                totalPrice += itemsAdded[i].precio;
                 var content = `
                     <div class='item-wrapper'>
                         <div class='item-img'>
@@ -178,18 +182,30 @@ $(document).ready(() => {
                             <div class='info'>
                                 <input type='number' placeholder='1' id='qtt' />
                                 <span class='price'>${itemsAdded[i].precio} €</span>
-                                <a id='eliminar' data-name='${itemsAdded[i].nombre}' data-id='${itemsAdded[i].id}' href='#'>
+                                <a id='eliminar' data-price='${itemsAdded[i].precio}' data-name='${itemsAdded[i].nombre}' data-id='${itemsAdded[i].id}' href='#'>
                                     <i class='close text-danger fas fa-times'></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-              
+                
                 `;
                 if (i === 0) {
                     $(".cart-items").empty();
                 }
+
                 $(".cart-items").append(content);
+
+                // ADD TOTAL AMOUNT
+                if (i == itemsAdded.length - 1) {
+                    let totalDiv = `
+                        <div class='total d-flex justify-content-end'>
+                            <p>TOTAL: <span class='qtt-total'>${totalPrice} €</span></p>
+                        </div>
+                    `;
+
+                    $(".cart-items").append(totalDiv);
+                }
             }
 
             const remove = document.querySelectorAll("#eliminar");
