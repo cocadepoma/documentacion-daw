@@ -11,12 +11,17 @@ body,
 html {
     height: 100%;
     line-height: 1.6;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
+}
+body {
+    height: 100vh;
 }
 
-
 /*---------------------- UTILS -----------------------*/
-
+.extend {
+    display: flex;
+    flex-direction: column;
+}
 .bold {
     font-weight: bold;
 }
@@ -45,11 +50,11 @@ html {
 }
 
 .black {
-    color: rgba(0, 0, 0, 0.781)!important;
+    color: rgba(0, 0, 0, 0.781) !important;
 }
 
 .black:hover {
-    color: rgba(255, 195, 82, 0.911)!important;
+    color: rgba(255, 195, 82, 0.911) !important;
 }
 
 #goTop {
@@ -59,6 +64,7 @@ html {
     bottom: 2rem;
     right: -5rem;
     transition: transform 0.6s, color 0.4s;
+    outline: none;
 }
 
 #goTop:hover {
@@ -78,8 +84,11 @@ html {
         transform: translate(-9rem) scale(4);
     }
 }
-
-
+.not-active {
+    pointer-events: none;
+    cursor: default;
+    color: rgb(156, 156, 156) !important;
+}
 /*---------------------- BUTTONS -----------------------*/
 
 .btn {
@@ -142,7 +151,6 @@ html {
     background-color: rgb(255, 166, 0);
 }
 
-
 /*---------------------- REM RESET -----------------------*/
 
 html {
@@ -158,7 +166,6 @@ h1 {
     font-size: 3.6rem;
     /* h1 = 36px */
 }
-
 
 /*---------------------- GENERAL -----------------------*/
 
@@ -224,9 +231,7 @@ a {
     text-decoration: none;
 }
 
-
 /*---------------------------------------------*/
-
 
 /* ///////////// HEADER \\\\\\\\\\\\\ */
 
@@ -253,12 +258,12 @@ a {
         font-size: 1.4rem;
     }
     h1 {
-        font-size: 4rem!important;
+        font-size: 4rem !important;
     }
 }
 
 .wallpapper {
-    background-image: url(../img/first3.jpg);
+    background-image: url(../img/first3.jpg) !important;
     position: relative;
     background-size: cover;
     background-attachment: fixed;
@@ -267,7 +272,7 @@ a {
 }
 
 header {
-    background-color: rgba(0, 253, 0, 0.010);
+    background-color: rgba(0, 253, 0, 0.01);
     display: flex;
     align-items: center;
 }
@@ -284,9 +289,7 @@ header img {
     color: rgba(55, 150, 11, 0.678);
 }
 
-
 /* ///////////// NAV \\\\\\\\\\\\\ */
-
 
 /* Burguer */
 
@@ -303,6 +306,7 @@ header img {
     top: 0.1rem;
     right: 2rem;
     z-index: 100;
+    outline: none;
 }
 
 .linea {
@@ -315,7 +319,7 @@ header img {
 }
 
 .line-colour {
-    background-color: rgb(250, 173, 29)!important;
+    background-color: rgb(250, 173, 29) !important;
 }
 
 .linea:last-of-type {
@@ -343,7 +347,6 @@ header img {
         display: none;
     }
 }
-
 
 /* Mobile Menu*/
 
@@ -388,7 +391,6 @@ header img {
         display: none;
     }
 }
-
 
 /* Main Menu */
 
@@ -441,12 +443,13 @@ nav {
     }
 }
 
-
 /* ///////////// MAIN CONTENT \\\\\\\\\\\\\ */
 
 main {
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding: 1rem;
     background-color: rgba(255, 255, 255, 0.897);
 }
@@ -463,11 +466,10 @@ main {
     }
 }
 
-
 /* Fixed images from Social Networks */
 
 .snetworks-fixed {
-    display: flex!important;
+    display: flex !important;
     flex-direction: column;
     position: fixed;
     margin-left: 1rem;
@@ -491,7 +493,7 @@ main {
 
 @media (min-width: 992px) {
     .snetworks-fixed {
-        display: flex!important;
+        display: flex !important;
         flex-direction: column;
         position: fixed;
         margin-left: 1rem;
@@ -500,7 +502,6 @@ main {
         transition: all 0.3s;
     }
 }
-
 
 /* Separator from header */
 
@@ -523,7 +524,6 @@ main {
     color: rgb(134, 133, 133);
 }
 
-
 /* ABOUT ME */
 
 .about-me {
@@ -541,9 +541,11 @@ main {
     text-align: justify;
 }
 
-
 /* PROJECTS */
 
+#main-projects {
+    height: 100vh;
+}
 .projects {
     margin-top: 4rem;
     display: grid;
@@ -604,9 +606,11 @@ span.move-info {
     }
 }
 
-
 /* BLOG */
-
+#blog-container {
+    flex-direction: row!important;
+    align-items: flex-start;
+}
 .blog-post {
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -720,13 +724,12 @@ span.move-info {
         padding: 0rem 1rem;
     }
     .article-buttons {
-        float: none!important;
+        float: none !important;
         grid-row: 3/3;
         grid-column: 2/3;
         padding: 0 1rem;
     }
 }
-
 
 /** Single article **/
 
@@ -796,12 +799,22 @@ span.move-info {
     padding: 2rem;
     flex: 1 0 100%;
 }
+.articles article {
+    transition: all 0.3s ease-in-out;
+}
+.articles article:hover {
+    background-color: rgba(189, 189, 189, 0.144);
 
+}
 .articles article h4 {
     margin-bottom: 2rem;
     text-align: center;
+    color: rgba(0, 0, 0, 0.589)!important;
+    transition: all 0.3s ease-in-out;
 }
-
+.articles article h4:hover {
+    color: rgba(0, 0, 0, 0.719)!important;
+}
 .articles article img {
     display: block;
     margin: 0 auto;
@@ -863,7 +876,6 @@ span.move-info {
     }
 }
 
-
 /* ///////////// SIDEBAR \\\\\\\\\\\\\ */
 
 aside {
@@ -878,6 +890,12 @@ aside h3 {
 
 aside h4 {
     margin-bottom: 0.8rem;
+    color: rgba(0, 0, 0, 0.589)!important;
+    transition: all 0.2s ease-in-out;
+}
+aside h4:hover {
+    margin-bottom: 0.8rem;
+    color: black!important;
 }
 
 aside article p {
@@ -894,7 +912,7 @@ aside article {
 }
 
 aside article:hover {
-    background-color: rgba(189, 189, 189, 0.116);
+    background-color: rgba(189, 189, 189, 0.144);
 }
 
 @media (min-width: 992px) {
@@ -902,7 +920,6 @@ aside article:hover {
         display: block !important;
     }
 }
-
 
 /* ///////////// CONTACT FORM \\\\\\\\\\\\\\\\\ */
 
@@ -1025,7 +1042,6 @@ form {
     }
 }
 
-
 /* ///////////// DIAGONAL BG \\\\\\\\\\\\\\\\\ */
 
 .clip {
@@ -1033,7 +1049,6 @@ form {
     padding-top: 100px;
     background-color: #f8f6f66c;
 }
-
 
 /* /////////////PREVIOUS FOOTER \\\\\\\\\\\\\\\ */
 
@@ -1062,7 +1077,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 .social-wrapper .rrss img {
@@ -1099,7 +1114,6 @@ form {
     }
 }
 
-
 /* ///////////// FOOTER \\\\\\\\\\\\\ */
 
 footer {
@@ -1113,11 +1127,3 @@ footer p {
     font-size: 1.4rem;
 }
 
-
-/********* RESPONSIVE **********/
-
-@media (min-width: 480px) {}
-
-@media (min-width: 768px) {}
-
-@media (min-width: 992px) {}
