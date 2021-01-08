@@ -3,10 +3,10 @@
   - [2. **Crear contenedor con una imagen remota**](#2-crear-contenedor-con-una-imagen-remota)
   - [3. **Conexión interactiva con contenedor**](#3-conexión-interactiva-con-contenedor)
   - [4. **Creación imagen httpd personalizada**](#4-creación-imagen-httpd-personalizada)
-  - [4. **Comprobar funcionamiento imagen local**](#4-comprobar-funcionamiento-imagen-local)
-  - [5. **Subir imagen docker local a docker-hub**](#5-subir-imagen-docker-local-a-docker-hub)
-  - [6. Borrar imágenes y contenedores locales](#6-borrar-imágenes-y-contenedores-locales)
-  - [7. **Crear contenedor con nuestra imagen personalizada desde repositorio**](#7-crear-contenedor-con-nuestra-imagen-personalizada-desde-repositorio)
+  - [5. **Comprobar funcionamiento imagen local**](#5-comprobar-funcionamiento-imagen-local)
+  - [6. **Subir imagen docker local a docker-hub**](#6-subir-imagen-docker-local-a-docker-hub)
+  - [7. **Borrar imágenes y contenedores locales**](#7-borrar-imágenes-y-contenedores-locales)
+  - [8. **Crear contenedor con nuestra imagen personalizada desde repositorio**](#8-crear-contenedor-con-nuestra-imagen-personalizada-desde-repositorio)
 
 
 # Ejercicio 3
@@ -51,7 +51,7 @@ _ _ _
    ~~~
    ![](img/captura1.png)
 
-3. Ahora que ya sabemos el puerto por defecto de la imagen, procedemos a crear un contenedor. En mi caso he elegido el 80 porque el 443 que indica en ExposedPorts no me ha funcionado:
+3. Ahora que ya sabemos el puerto por defecto de la imagen, procedemos a crear un contenedor. En mi caso he elegido el 80 porque el 443 es para https:
    ~~~
    $ docker run --rm -d -p 80:80 --name prueba prakhar1989/static-site
    ~~~
@@ -61,7 +61,7 @@ _ _ _
    - El parámetro `-d` le indica que se ejecutará en segundo plano.
    - El parámetro `-p` debe ir seguido de los puertos, **puerto_deseado:puerto_imagen**.
    - El parámetro `--name` debe ir seguido de un nombre a nuestra elección para identificar más fácilmente el container.
-   - Por último el nombre de la imagen, en este caso `httpd`.
+   - Por último el nombre de la imagen, en este caso `prakhar1989/static-site`.
 
 4. Ahora si nos dirigimos a la dirección **localhost:puerto_deseado** debería de aparecernos el index.html que hay configurado por defecto.
    
@@ -108,15 +108,16 @@ Para conectar con el container deberemos de realizar lo siguiente:
    ![](img/captura3.png)
 
    Ya sabemos la ruta del `index.html` por lo que ya podremos proceder a editar nuestra propia imagen.
-4. Aprovechamos y copiamos el `index.html` del contenedor, fuera de él para editarlo posteriormente:
-   ~~~
-   $ docker cp prueba:/usr/share/nginx/html/index.html .
-   ~~~
-5. Salimos.
+
+4. Salimos de la sesión interactiva.
    ~~~
    $ exit
    ~~~
-   Indicamos el nombre del contenedor seguido de dos puntos, después la ruta o archivo que queremos copiar y como segundo parámetro la ruta destino, en mi caso en el mismo.
+   
+5. Indicamos el nombre del contenedor seguido de dos puntos, después la ruta o archivo que queremos copiar y como segundo parámetro la ruta destino, en mi caso en el mismo.
+   ~~~
+   $ docker cp prueba:/usr/share/nginx/html/index.html .
+   ~~~
 
 6. Editamos el index.html
 ![](img/captura4.png)
@@ -143,7 +144,7 @@ _ _ _
 
    En el `COPY` hemos indicado primero el archivo que queremos insertar (index.html) en el contenedor y después el directorio destino que hemos buscado en los pasos previos.
    
-3. Ahora que ya tenemos finlaizado nuestro archivo `Dockerfile`, ya podemos crear la imagen con la siguiente instrucción:
+3. Ahora que ya tenemos finalizado nuestro archivo `Dockerfile`, ya podemos crear la imagen con la siguiente instrucción:
    ~~~
    $ docker build -t soyl3y3nd4/daw-hola-mundo:latest .
 
@@ -164,7 +165,7 @@ _ _ _
    Después del parámetro `-t` debe de ir nuestro **nombre de usuario de dockerhub** (importante si queremos subir la imagen), **nombre de la imagen** y la **versión**, que en caso de no indicarla la establece por defecto como latest. Por último debemos indicar la ruta del archivo `Dockerfile`, en este caso nos encontramos situados en el mismo directorio con lo que lo indicamos con un **punto**.
 _ _ _ 
 
-## 4. **Comprobar funcionamiento imagen local**
+## 5. **Comprobar funcionamiento imagen local**
 
 1. Ahora que hemos terminado de crear nuestra imagen personalizada, comprobaremos si funciona debidamente y lo haremos de la forma siguiente:
    - Crearemos un contenedor que se borre automáticamente al pararlo
@@ -180,12 +181,12 @@ _ _ _
 
 _ _ _ 
 
-## 5. **Subir imagen docker local a docker-hub**
+## 6. **Subir imagen docker local a docker-hub**
 
 1. Antes de realizar la subida de la imagen de docker debemos de habernos registrado previamente en la web de [dockerhub](https://hub.docker.com/). Después nos logearemos en la terminal con nuestra cuenta de docker-hub con `docker login` y se nos solicitará nuestras credenciales:
 
    ~~~
-   $ $ docker login
+   $ docker login
 
    Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
    Username: soyl3y3nd4
@@ -216,7 +217,7 @@ _ _ _
    latest: digest: sha256:eda8d7fcf5d7ab0ca8b9fb0c165b8bc3da0b05f09021126006d51d0798d97fb3 size: 3633
    ~~~
 
-## 6. Borrar imágenes y contenedores locales
+## 7. **Borrar imágenes y contenedores locales**
 
 Ahora borraremos todas nuestros contenedores y nuestras imágenes. Importante respetar ese order, primero borrar contenedores (además deben de estar parados) y después las imágenes o de lo contrario recibiremos un error de que no se ha podido realizar la operación.
 
@@ -252,7 +253,7 @@ Ahora borraremos todas nuestros contenedores y nuestras imágenes. Importante re
 
 _ _ _
 
-## 7. **Crear contenedor con nuestra imagen personalizada desde repositorio**
+## 8. **Crear contenedor con nuestra imagen personalizada desde repositorio**
 
 En los pasos anteriores hemos creado una imagen personalizada local y la hemos utilizado para crear un container pero localmente. Después la hemos subido al repositorio de docker-hub para que cualquiera tenga acceso a ella. Ahora si todo ha ido bien y la volvemos a instalar, docker buscará esa imagen localmente y en caso de no encontrarla buscara la en el repositorio remoto y procederá a su instalación.
 

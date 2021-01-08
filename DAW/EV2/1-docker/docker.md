@@ -67,8 +67,13 @@ un contenedor es una imagen de Debian básica.
 
 - Mostrar logs de un contenedor
    ~~~
-   $ docker logs nombre_contenedor
+   $ docker container logs nombre_contenedor 
+   $ docker container logs nombre_contenedor -f
+   $ docker container logs nombre_contenedor --tail 10
+   $ docker container logs nombre_contenedor --timestamps
+
    ~~~
+- 
 
 - Reiniciar contenedor
    ~~~
@@ -79,7 +84,7 @@ un contenedor es una imagen de Debian básica.
   ~~~
   docker inspect httpd
   ~~~
-  ![](,/../img/captura1.png)
+  ![](./img/captura1.png)
 
 
 - Ejecutar comandos dentro del contenedor. Las `i` y `-t` crean un proceso en el contenedor que nos permitiran interactuar con el contenedor, pueden ponerse también juntas `-it`. 
@@ -375,4 +380,17 @@ $ docker inspect web2
 
 Ahora entre ellos dos, ya se pueden comunicar.
 
+
+## **Vólumenes**
+Existen 2 tipos de volúmenes.
+- Para crear un volumen usamos:
+  ~~~
+   $ docker volume create nombre_volumen
+  ~~~
+- Inspeccionamos:
+  ~~~
+   $ docker inspect prueba
+  ~~~
+  ![](img/captura6.png)
+  El mountpoint es la ruta en la que se guardaran los contenedores que asociemos a este volumen.
 
