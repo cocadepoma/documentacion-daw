@@ -583,7 +583,7 @@ img.filteroff {
     background-color: rgba(255, 203, 107, 0.781);
     color: rgb(37, 37, 37);
     position: absolute;
-    bottom: -5rem;
+    bottom: -5.5rem;
     left: 0;
     transition: transform 0.5s;
 }
@@ -608,7 +608,7 @@ span.move-info {
 
 /* BLOG */
 #blog-container {
-    flex-direction: row!important;
+    flex-direction: row !important;
     align-items: flex-start;
 }
 .blog-post {
@@ -804,16 +804,15 @@ span.move-info {
 }
 .articles article:hover {
     background-color: rgba(189, 189, 189, 0.144);
-
 }
 .articles article h4 {
     margin-bottom: 2rem;
     text-align: center;
-    color: rgba(0, 0, 0, 0.589)!important;
+    color: rgba(0, 0, 0, 0.589) !important;
     transition: all 0.3s ease-in-out;
 }
 .articles article h4:hover {
-    color: rgba(0, 0, 0, 0.719)!important;
+    color: rgba(0, 0, 0, 0.719) !important;
 }
 .articles article img {
     display: block;
@@ -890,12 +889,12 @@ aside h3 {
 
 aside h4 {
     margin-bottom: 0.8rem;
-    color: rgba(0, 0, 0, 0.589)!important;
+    color: rgba(0, 0, 0, 0.589) !important;
     transition: all 0.2s ease-in-out;
 }
 aside h4:hover {
     margin-bottom: 0.8rem;
-    color: black!important;
+    color: black !important;
 }
 
 aside article p {
@@ -1126,4 +1125,3 @@ footer p {
     text-align: center;
     font-size: 1.4rem;
 }
-
