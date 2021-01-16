@@ -392,5 +392,19 @@ Existen 2 tipos de volúmenes.
    $ docker inspect prueba
   ~~~
   ![](img/captura6.png)
-  El mountpoint es la ruta en la que se guardaran los contenedores que asociemos a este volumen.
 
+El mountpoint es la ruta en la que se guardaran los contenedores que asociemos a este volumen.
+
+### Forma 1
+Estamos diciendole que use el volumen `mivolumen` para que escuche el directorio `:/var/log/apache2`. 
+Si no le indicamos nombre de volumen, lo creará igualmente pero con un ID que docker decide.
+Si le indicamos el nombre de un volumen y no existe, lo creará igualmente.
+~~~
+docker run -p 80:80 -v mivolumen:/var/log/apache2 soyl3y3nd4/ejercicio4
+~~~
+
+### Forma 2
+Le estamos diciendo que en el directorio `~/Documentos/ejercicio-4-DAW/log` genere un volumen que escuche el directorio `/var/log/apache2`
+~~~
+docker run -p 80:80 -v ~/Documentos/ejercicio-4-DAW/logs:/var/log/apache2 soyl3y3nd4/ejercicio4
+~~~
