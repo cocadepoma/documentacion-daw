@@ -1,0 +1,28 @@
+version: "3"
+services:
+  mi_servicio:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: pruebaphp
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    environment:
+      - PMA_HOST=db
+    networks:
+      - frontend
+      - backend
+  db:
+    image: mariadb:latest
+    container_name: pruebamariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    volumes:
+      - /home/paco/Documentos/prueba-compose:/var/lib/mysql
+    networks:
+      - backend
+networks:
+  backend:
+  frontend:
