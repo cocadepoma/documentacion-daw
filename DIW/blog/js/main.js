@@ -1,6 +1,12 @@
 $().ready(() => {
    "use strict";
 
+   /* Remove fixed background effect for Safari */
+   var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+   if (is_safari) {
+      $('.wallpapper').css("background-attachment", "scroll");
+   }
+
    /* Show and Hide mobile menu*/
    const burger = $(".burger");
    const burgerMenu = $(".burger-menu");
@@ -48,7 +54,6 @@ $().ready(() => {
    let frs = $(".frs");
 
    // Scroll functions
-
    $(document).scroll(function () {
       let separator = $(".separator").offset().top;
       let position = $(window).scrollTop() + 120;
@@ -76,10 +81,17 @@ $().ready(() => {
    // Set transparent NAV only at index.*
    let url = $(location).attr("href");
    let page = url.split("/");
+   let separator = $(".separator").offset().top;
+
    page = page[page.length - 1].split(".")[0];
 
    if (page != "index" && page != "") {
-      console.log(page);
+      nav.addClass("bg-white shadow black-text");
+      $(".a-nav").addClass("black");
+      frs.css("display", "inline");
+   }
+
+   if (page == "index" && (document.body.getBoundingClientRect().y * -1) > separator - 120) {
       nav.addClass("bg-white shadow black-text");
       $(".a-nav").addClass("black");
       frs.css("display", "inline");
@@ -88,7 +100,9 @@ $().ready(() => {
    // GoTop movement to TOP
    $("#goTop").click(function (event) {
       event.preventDefault();
-      $("html, body").animate({ scrollTop: 0 }, 1300);
+      $("html, body").animate({
+         scrollTop: 0
+      }, 1300);
    });
 
    // Hover to projects images
@@ -96,11 +110,11 @@ $().ready(() => {
 
    for (let i = 0; i < proyectos.length; i++) {
       proyectos[i].addEventListener("mouseenter", () => {
-         proyectos[i].lastElementChild.classList.add("move-info");
+         proyectos[i].classList.add("sombra");
          proyectos[i].children[0].classList.add("filteroff");
       });
       proyectos[i].addEventListener("mouseleave", () => {
-         proyectos[i].lastElementChild.classList.remove("move-info");
+         proyectos[i].classList.remove("sombra");
          proyectos[i].children[0].classList.remove("filteroff");
       });
    }
