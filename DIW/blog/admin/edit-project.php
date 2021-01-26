@@ -37,7 +37,7 @@ include_once('./layout/navbar.php');
                     </div>
                     <div class="form-check form-switch grid-form">
                         <label for="active">Activo: </label>
-                        <input name="active" class="form-check-input" type="checkbox" id="<?php echo ($project['activo']) ? "flexSwitchCheckChecked" : "flexSwitchCheckDefault"; ?>" <?php echo ($project['activo']) ? "checked" : ""; ?>>
+                        <input name="active" class="form-check-input project-active" type="checkbox" id="<?php echo ($project['activo']) ? "flexSwitchCheckChecked" : "flexSwitchCheckDefault"; ?>" <?php echo ($project['activo']) ? "checked" : ""; ?>>
                     </div>
                     <div class="name-edit grid-form ">
                         <label for="name">Nombre: </label>

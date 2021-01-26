@@ -38,7 +38,7 @@ if (isset($_GET['art']) && strlen($_GET['art']) > 0) {
         <div class="edit-edit-wrapper dashboard">
             <div class="form-check form-switch grid-form">
                 <label for="active">Activo: </label>
-                <input name="active" class="form-check-input article-active" type="checkbox" id="<?php echo ($article['publicado']) ? "flexSwitchCheckChecked" : "flexSwitchCheckDefault"; ?>" <?php echo ($article['publicado']) ? "checked" : ""; ?>>
+                <input name="active" class="form-check-input article-active project-active" type="checkbox" id="<?php echo ($article['publicado']) ? "flexSwitchCheckChecked" : "flexSwitchCheckDefault"; ?>" <?php echo ($article['publicado']) ? "checked" : ""; ?>>
             </div>
             <div class="url-edit grid-form">
                 <label for="name">Url titulo: </label>

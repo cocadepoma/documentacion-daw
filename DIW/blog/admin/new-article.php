@@ -1,7 +1,9 @@
 <?php
 include_once('./sessions/sessions.php');
+include_once('../database/connection.php');
 include_once('./layout/header.php');
 include_once('./layout/navbar.php');
+
 
 ?>
 <main class="container dashboard">
@@ -13,7 +15,7 @@ include_once('./layout/navbar.php');
         <div class="edit-edit-wrapper dashboard">
             <div class="form-check form-switch grid-form">
                 <label for="active">Activo: </label>
-                <input name="active" class="form-check-input article-active" type="checkbox" id="flexSwitchCheckDefault">
+                <input name="active" class="form-check-input article-active project-active" type="checkbox" id="flexSwitchCheckDefault">
             </div>
             <div class="url-edit grid-form">
                 <label for="name">Url titulo: </label>
@@ -32,6 +34,28 @@ include_once('./layout/navbar.php');
                 <label for="url">Fecha: </label>
                 <input type="date" name="date" class="article-date">
             </div>
+
+            <label for="categories">Categorías:</label>
+            <ul class="multiselect my-3">
+                <?php
+                try {
+
+                    $conn = connect();
+                    $sql = "SELECT * FROM categorias";
+
+                    if ($result = $conn->query($sql)) {
+
+                        while ($category = $result->fetch_assoc()) {
+
+                            echo "<li data-id='" . $category['id_categoria'] . "'>" . $category['nombre_categoria'] . "</li>";
+                        }
+                    }
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+                ?>
+
+            </ul>
             <label for="info">Previo: </label>
             <div class="preview-edit">
                 <div class="controls d-flex justify-content-center">
