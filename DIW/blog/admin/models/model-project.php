@@ -1,35 +1,41 @@
 <?php
 
-// TODO //
-
-// add-date to new-images uploaded.
-// check if dir exists
-
 include_once('../../database/connection.php');
 include_once('../functions/functions.php');
 
 
 if (isset($_POST['edit']) && $_POST['edit'] == 1) {
 
-    $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/img/projects/";
-    $file_name = basename($_FILES['img-project']['name']);
-    $target_file = $target_dir . $file_name;
-    $extension_file = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $target_dir = "";
+    $file_name = "";
+    $target_file = "";
+    $extension_file = "";
+    $image_ok = false;
 
     $project_id = '';
     $project_name = '';
     $project_url = '';
     $project_info = '';
     $project_active = 0;
-    $update_ok = true;
-    $image_ok = true;
+
 
     // Check if input id is filled, if isn't, go back
     if (isset($_POST['id']) && strlen($_POST['id'])  > 0) {
 
         $project_id = $_POST['id'];
 
-        $image_ok = validImage($_FILES['img-project']['error'], $target_file, $extension_file);
+        if (isset($_FILES['img-project'])) {
+
+            $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/blog/img/projects/";
+            $name = pathinfo($_FILES['img-project']['name'], PATHINFO_FILENAME);
+            $extension = strtolower(pathinfo($_FILES['img-project']['name'], PATHINFO_EXTENSION));
+            $filename_database = $name . "-" . date("m-j-Y-Hms") . "." . $extension;
+
+            $target_file = $target_dir . $filename_database;
+
+            $image_ok = validImage($_FILES['img-project']['error'], $target_file, $extension);
+        }
+
 
         $arr = getProjectData($project_id);
 
@@ -67,13 +73,13 @@ if (isset($_POST['edit']) && $_POST['edit'] == 1) {
                     $conn = connect();
                     $sql = "UPDATE proyectos SET nombre = ?, portada = ?, url = ?, descripcion = ?, activo = ? WHERE id = ?";
                     $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("sssssi", $project_name, $file_name, $project_url, $project_info, $project_active, $project_id);
+                    $stmt->bind_param("sssssi", $project_name, $filename_database, $project_url, $project_info, $project_active, $project_id);
                     $status = $stmt->execute();
 
                     if ($status) {
                         $response = array(
                             'respuesta' => 'exito',
-                            'imagen' => $file_name,
+                            'imagen' => $filename_database,
                             'proyecto' => $project_id
                         );
                     } else {
@@ -161,7 +167,7 @@ if (isset($_POST['delete']) && $_POST['delete'] == 1 && isset($_POST['id']) && s
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {
 
-    $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/img/projects/";
+    $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/blog/img/projects/";
     $file_name = basename($_FILES['img-project']['name']);
     $target_file = $target_dir . $file_name;
     $extension_file = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));

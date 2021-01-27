@@ -17,27 +17,31 @@ require_once('./database/connection.php');
             $query = "SELECT * FROM articulos ORDER BY fecha DESC";
 
             if ($result = $conn->query($query)) {
-                while ($row = $result->fetch_assoc()) { ?>
-                    <article class="blog-post">
-                        <h3><?php echo $row['titulo']; ?></h3>
-                        <div class="autor-date">
-                            <p><?php echo $row['preview']; ?></p>
+                while ($row = $result->fetch_assoc()) {
 
-                            <p class="p-date">
-                                <?php echo date('H:i a d-m-Y', strtotime($row['fecha'])); ?>
 
-                                publicado por: <span class="bold"><?php echo $row['autor']; ?></span>
-                            </p>
-                        </div>
-                        <div class="image-article">
-                            <img src="./img/blog/<?php echo $row['portada']; ?>" alt="imagen noticia">
-                        </div>
-                        <div class="article-buttons">
-                            <a class="btn btn-article" href="articulo.php?art=<?php echo $row['urltitulo']; ?>">Ver entrada</a>
-                            <div class="clear-fix"></div>
-                        </div>
-                    </article>
+                    if ($row['publicado'] == 1) { ?>
+                        <article class="blog-post">
+                            <h3><?php echo $row['titulo']; ?></h3>
+                            <div class="autor-date">
+                                <p><?php echo $row['preview']; ?></p>
+
+                                <p class="p-date">
+                                    <?php echo date('H:i a d-m-Y', strtotime($row['fecha'])); ?>
+
+                                    publicado por: <span class="bold"><?php echo $row['autor']; ?></span>
+                                </p>
+                            </div>
+                            <div class="image-article">
+                                <img src="./img/blog/<?php echo $row['portada']; ?>" alt="imagen noticia">
+                            </div>
+                            <div class="article-buttons">
+                                <a class="btn btn-article" href="articulo.php?art=<?php echo $row['urltitulo']; ?>">Ver entrada</a>
+                                <div class="clear-fix"></div>
+                            </div>
+                        </article>
         <?php }
+                }
             }
         } ?>
 

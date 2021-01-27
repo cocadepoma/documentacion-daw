@@ -8,6 +8,7 @@ include_once('./layout/navbar.php');
 if (isset($_GET['art']) && strlen($_GET['art']) > 0) {
 
     $article_url_id = $_GET['art'];
+    $categories_arr = [];
 
     try {
         $conn = connect();
@@ -16,11 +17,26 @@ if (isset($_GET['art']) && strlen($_GET['art']) > 0) {
         $stmt->bind_param("s", $article_url_id);
         $stmt->execute();
         $result = $stmt->get_result();
-
+        $stmt->close();
         if (!$conn->affected_rows) {
             header('location: admin-area.php');
         }
         $article = $result->fetch_assoc();
+    } catch (Exception $e) {
+        header("location: admin-area.php?err=$err");
+    }
+
+    try {
+        $conn = connect();
+        $sql = "SELECT categorias.id_categoria FROM categorias INNER JOIN articulos_categorias on categorias.id_categoria = articulos_categorias.id_categoria INNER JOIN articulos ON articulos_categorias.id_articulo = articulos.id WHERE articulos.urltitulo = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $article_url_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $categories_arr[] = $row['id_categoria'];
+        }
     } catch (Exception $e) {
         header("location: admin-area.php?err=$err");
     }
@@ -57,6 +73,30 @@ if (isset($_GET['art']) && strlen($_GET['art']) > 0) {
                 <label for="url">Fecha: </label>
                 <input type="date" name="date" class="article-date" value="<?php echo $article['fecha'] ?>">
             </div>
+            <label for="categories">Categorías:</label>
+            <ul class="multiselect my-3">
+                <?php
+                try {
+
+                    $conn = connect();
+                    $sql = "SELECT * FROM categorias";
+
+                    if ($result = $conn->query($sql)) {
+
+                        while ($category = $result->fetch_assoc()) {
+                            if (in_array($category['id_categoria'], $categories_arr)) {
+                                echo "<li data-id='" . $category['id_categoria'] . "' class='done'>" . $category['nombre_categoria'] . "</li>";
+                            } else {
+                                echo "<li data-id='" . $category['id_categoria'] . "'>" . $category['nombre_categoria'] . "</li>";
+                            }
+                        }
+                    }
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+                ?>
+
+            </ul>
             <label for="info">Previo: </label>
             <div class="preview-edit">
                 <div class="controls d-flex justify-content-center">

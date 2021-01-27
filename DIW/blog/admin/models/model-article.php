@@ -2,6 +2,7 @@
 include_once('../../database/connection.php');
 include_once('../functions/functions.php');
 
+
 if (isset($_POST['new']) && $_POST['new'] == "1") {
 
     $target_dir = "";
@@ -22,11 +23,10 @@ if (isset($_POST['new']) && $_POST['new'] == "1") {
 
     if (isset($_FILES['article-img'])) {
 
-        $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/img/blog/";
+        $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/blog/img/blog/";
         $name = pathinfo($_FILES['article-img']['name'], PATHINFO_FILENAME);
         $extension = strtolower(pathinfo($_FILES['article-img']['name'], PATHINFO_EXTENSION));
         $filename_database = $name . "-" . date("m-j-Y-Hms") . "." . $extension;
-
 
         $target_file = $target_dir . $filename_database;
 
@@ -89,11 +89,44 @@ if (isset($_POST['new']) && $_POST['new'] == "1") {
                 $new_id = $stmt->insert_id;
 
                 if ($stmt->affected_rows) {
-                    $response = array(
-                        "respuesta" => "exito",
-                        "id_articulo" => $new_id,
-                        "imagen" => $filename_database
-                    );
+
+                    if (isset($_POST['categories']) && strlen($_POST['categories'] > 0)) {
+                        $stmt->close();
+
+                        $categories = explode(",", $_POST['categories']);
+                        $cnt = 0;
+                        foreach ($categories as $i => $id_category) {
+
+                            $sql = "INSERT INTO articulos_categorias (id_articulo, id_categoria) VALUES (?,?)";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("ii", $new_id, $id_category);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            if ($conn->affected_rows) {
+                                $cnt++;
+                            }
+                        }
+
+                        if ($cnt == count($categories)) {
+                            $response = array(
+                                "respuesta" => "exito",
+                                "id_articulo" => $new_id,
+                                "imagen" => $filename_database
+                            );
+                        } else {
+                            $response = array(
+                                "respuesta" => "error",
+                                "error" => "category"
+                            );
+                        }
+                    } else {
+                        $response = array(
+                            "respuesta" => "exito",
+                            "id_articulo" => $new_id,
+                            "imagen" => $filename_database
+                        );
+                    }
                 } else {
                     $response = array(
                         "respuesta" => "error",
@@ -175,10 +208,9 @@ if (isset($_POST['update']) && $_POST['update'] == "1") {
     $old_article_url = '';
     $same_url = false;
 
-
     if (isset($_FILES['article-img'])) {
 
-        $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/img/blog/";
+        $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/blog/img/blog/";
         $name = pathinfo($_FILES['article-img']['name'], PATHINFO_FILENAME);
         $extension = strtolower(pathinfo($_FILES['article-img']['name'], PATHINFO_EXTENSION));
         $filename_database = $name . "-" . date("m-j-Y-Hms") . "." . $extension;
@@ -260,7 +292,7 @@ if (isset($_POST['update']) && $_POST['update'] == "1") {
                         $response = array(
                             "update" => "exito",
                             "id_articulo" => $article_id,
-                            "imagen" => $filename_database
+                            "imagen" => $filename_database,
                         );
                     } else {
                         $response = array(
@@ -288,6 +320,7 @@ if (isset($_POST['update']) && $_POST['update'] == "1") {
             );
         }
     } else {
+
         if ($uploadOK && ($same_url || !getIfUrlExists($article_url))) {
 
             try {
@@ -299,10 +332,61 @@ if (isset($_POST['update']) && $_POST['update'] == "1") {
                 $status = $stmt->execute();
 
                 if ($status) {
-                    $response = array(
-                        "update" => "exito",
-                        "id_articulo" => $article_id,
-                    );
+
+                    if (isset($_POST['categories']) && strlen($_POST['categories'] > 0)) {
+                        $stmt->close();
+
+                        $categories_new = explode(",", $_POST['categories']);
+                        $categories_old = getCategories($article_id);
+                        $categories_remove = [];
+
+                        // Find if some old category isn't inside the new ones
+                        for ($i = 0; $i < count($categories_old); $i++) {
+                            if (!in_array($categories_old[$i], $categories_new)) {
+                                $categories_remove[] = $categories_old[$i];
+                            }
+                        }
+
+                        // Insert every category
+                        $cnt = 0;
+                        foreach ($categories_new as $i => $id_category) {
+
+                            $sql = "INSERT INTO articulos_categorias (id_articulo, id_categoria) VALUES (?,?)";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("ii", $article_id, $id_category);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            if ($conn->affected_rows) {
+                                $cnt++;
+                            }
+                        }
+                        // If the inserts were successful, delete old categories not listed anymore
+                        if ($cnt == count($categories_new) && deleteCategories($article_id, $categories_remove)) {
+                            $response = array(
+                                "update" => "exito",
+                                "id_articulo" => $article_id,
+                            );
+                        } else {
+                            $response = array(
+                                "update" => "error",
+                                "error" => "category"
+                            );
+                        }
+                    } else {
+                        // If the categories list was empty, delete all from DB
+                        if (deleteAllCategories($article_id)) {
+                            $response = array(
+                                "update" => "exito",
+                                "id_articulo" => $article_id,
+                            );
+                        } else {
+                            $response = array(
+                                "update" => "error",
+                                "error" => "category_delete_all"
+                            );
+                        }
+                    }
                 } else {
                     $response = array(
                         "update" => "error",

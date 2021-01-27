@@ -130,3 +130,75 @@ function checkValidUsername($name)
         return false;
     }
 }
+
+function getCategories($id)
+{
+    $categories = [];
+
+    try {
+        $conn = connect();
+        $sql = "SELECT categorias.id_categoria FROM categorias INNER JOIN articulos_categorias on categorias.id_categoria = articulos_categorias.id_categoria INNER JOIN articulos ON articulos_categorias.id_articulo = articulos.id WHERE articulos.id = ? ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($category = $result->fetch_assoc()) {
+            $categories[] = $category['id_categoria'];
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+
+    return $categories;
+}
+
+function deleteCategories($id, $categories)
+{
+    $cnt = 0;
+    try {
+        $conn = connect();
+
+        foreach ($categories as $key => $category_id) {
+            # code...
+            $sql = "DELETE FROM articulos_categorias WHERE id_articulo = ? AND id_categoria = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $id, $category_id);
+            $stmt->execute();
+
+            if ($stmt->affected_rows) {
+                $cnt++;
+            }
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+
+    if ($cnt == count($categories)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function deleteAllCategories($id)
+{
+    $ok = false;
+
+    try {
+        $conn = connect();
+
+        # code...
+        $sql = "DELETE FROM articulos_categorias WHERE id_articulo = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $ok = true;
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+
+    return $ok;
+}

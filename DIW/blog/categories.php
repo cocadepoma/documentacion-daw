@@ -56,27 +56,29 @@ include_once('./layout/separator.php');
                 echo "<a href='blog.php'>Volver al Blog</a>";
                 echo "</div>";
             }
-            while ($row = $result->fetch_assoc()) { ?>
-                <article class="blog-post">
-                    <h3><?php echo $row['titulo']; ?></h3>
-                    <div class="autor-date">
-                        <p><?php echo $row['preview']; ?></p>
+            while ($row = $result->fetch_assoc()) {
+                if ($row['publicado']) { ?>
+                    <article class="blog-post">
+                        <h3><?php echo $row['titulo']; ?></h3>
+                        <div class="autor-date">
+                            <p><?php echo $row['preview']; ?></p>
 
-                        <p class="p-date">
-                            <?php echo date('H:i a d-m-Y', strtotime($row['fecha'])); ?>
+                            <p class="p-date">
+                                <?php echo date('H:i a d-m-Y', strtotime($row['fecha'])); ?>
 
-                            publicado por: <span class="bold"><?php echo $row['autor']; ?></span>
-                        </p>
-                    </div>
-                    <div class="image-article">
-                        <img src="./img/blog/<?php echo $row['portada']; ?>" alt="imagen noticia">
-                    </div>
-                    <div class="article-buttons">
-                        <a class="btn btn-article" href="articulo.php?art=<?php echo $row['urltitulo']; ?>">Ver entrada</a>
-                        <div class="clear-fix"></div>
-                    </div>
-                </article>
+                                publicado por: <span class="bold"><?php echo $row['autor']; ?></span>
+                            </p>
+                        </div>
+                        <div class="image-article">
+                            <img src="./img/blog/<?php echo $row['portada']; ?>" alt="imagen noticia">
+                        </div>
+                        <div class="article-buttons">
+                            <a class="btn btn-article" href="articulo.php?art=<?php echo $row['urltitulo']; ?>">Ver entrada</a>
+                            <div class="clear-fix"></div>
+                        </div>
+                    </article>
         <?php }
+            }
         } ?>
 
 
