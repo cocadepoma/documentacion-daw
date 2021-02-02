@@ -189,8 +189,6 @@ networks:
 
 
 
-
-
 ### SINTAXIS
 SINTAXIS - 1:
 ~~~
