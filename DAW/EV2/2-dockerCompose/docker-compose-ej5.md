@@ -149,3 +149,43 @@ networks:
   frontend:
   backend:
 ~~~
+version: "3"
+services:
+    apachephp:
+        build: ./dockerfile/
+        ports:
+            - 80:80
+        volumes:
+            - ~/Documentos/pruebasdocker/ej5/web:/var/www/html
+        depends_on: 
+            - mariadb
+        networks:
+            - backend
+            - frontend
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        ports:
+            - 8080:80
+        environment:
+            PMA_HOST: mariadb
+        depends_on: 
+            - mariadb
+        networks:
+            - backend
+    mariadb:
+        image: mariadb:latest
+        volumes: 
+            - ~/Documentos/pruebasdocker/ej5/db:/var/lib/mysql
+            - ~/Documentos/pruebasdocker/ej5/sql/init.sql:/data/application/init.sql
+        command: --init-file /data/application/init.sql
+        environment:
+            MYSQL_ROOT_USER: root
+            MYSQL_ROOT_PASSWORD: admin
+            MYSQL_DATABASE: testdb
+            MYSQL_USER: user
+            MYSQL_ROOT_PASSWORD: user
+        networks:
+          - backend
+networks:
+  frontend:
+  backend:
