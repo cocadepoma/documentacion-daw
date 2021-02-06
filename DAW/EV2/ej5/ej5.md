@@ -5,6 +5,8 @@
   - [2 Creación servicio PHP](#2-creación-servicio-php)
   - [3 Creación servicio PHPmyadmin](#3-creación-servicio-phpmyadmin)
   - [4 Creacion servicio mariadb](#4-creacion-servicio-mariadb)
+  - [5 Creación de redes:](#5-creación-de-redes)
+  - [6 Probar funcionamiento](#6-probar-funcionamiento)
 
 ## 1 Creación imagen Apache & PHP
 
@@ -119,3 +121,76 @@
 
 5. Si todo lo hemos realizado correctamente, deberiamos de tener una carpeta estructurada como la siguiente imagen:
    ![imagen](img/captura4.png)
+
+
+## 5 Creación de redes:
+
+1. Ahora para que se comuniquen internamento los servicios, debemos de hacerlo mediante redes, para ello crearemos 2 redes: `backend` y `frontend`. Estas redes debemos de crearlas paralelas a donde declaramos **services**.
+    ~~~
+    networks:
+        frontend:
+        backend:
+    ~~~
+2. Una vez creadas estas redes, deberemos de aplicarlas a las servicios respectivos. A mariaDB y phpMyAdmin les aplicaremos la red backend, y a apachephp la red frontend y backend, así se comunicará con ambos módulos. Sólo abrá que agregar a cada servico la palabra `networks:` y en la línea siguiente indicar la red.
+
+    ~~~
+    networks:
+      - frontend
+    ~~~
+
+3. Además agregaremos tanto a apachephp com a phpmyadmin la etiqueta `depends_on:` y el nombre del servicio, en este caso mariadb, para que lo priorice y evitar así errores.
+    ~~~
+    version: "3"
+    services:
+        apachephp:
+            build: ./dockerfile/
+            container_name: pruebaapachephp
+            ports:
+                - 80:80
+            volumes:
+                - /home/paco/Documentos/ej5/web:/var/www/html
+            depends_on:
+                - mariadb
+            networks:
+                - backend
+                - frontend
+        phpmyadmin:
+            image: phpmyadmin/phpmyadmin:latest
+            container_name: pruebaphp
+            ports:
+                - 8080:80
+            environment:
+                PMA_HOST: mariadb
+            depends_on:
+                - mariadb
+            networks:
+                - backend
+        mariadb:
+            image: mariadb:latest
+            container_name: mdb
+            ports:
+                - 3306:3306
+            volumes:
+                - /home/paco/Documentos/pruebasdocker/ej5/db:/var/lib/mysql
+                - /home/paco/Documentos/pruebasdocker/ej5/sql/init.sql:/data/application/init.sql
+            command: --init-file /data/application/init.sql
+            environment:
+                MYSQL_ROOT_USER: root
+                MYSQL_ROOT_PASSWORD: admin
+                MYSQL_DATABASE: testdb
+                MYSQL_USER: user
+                MYSQL_PASSWORD: user
+            networks:
+                - backend
+    networks:
+        frontend:
+        backend:
+    ~~~
+
+## 6 Probar funcionamiento
+
+1. Ahora una vez terminado el archivo docker-compose, realizamos `docker-compose up` y podremos rellenar el formulario y recibir una respuesta del servidor.
+ ![imagen](img/captura5.png)
+
+2. Si accedemos a `localhost:8080` y hacemos login con **user** deberiamos de poder tener acceso a la BD testdb y podremos observar los datos introducidos.
+ ![imagen](img/captura3.png)
