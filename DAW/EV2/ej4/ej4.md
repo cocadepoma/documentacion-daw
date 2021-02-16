@@ -30,7 +30,7 @@
    ~~~
    $ docker run --rm -it php:apache /bin/bash
    ~~~
-   Si realizandos un inspect, en `workingdirs` veremos cuando relizamos una sesion interactiva donde namos el contenios aparecerá.
+   Si realizandos un inspect, en `workingdirs` veremos cuando relizamos una sesion interactiva donde el contenido aparecerá.
    Si listamos el contenido dentro del directorio con `ls`, podemos comprobar que no hay nada dentro.
 
 8. Nos dirigimos a `etc/apache2/sites-enabled` y hacemos un cat a 000-default.conf
